@@ -1,0 +1,13 @@
+#Foi instalado uma extension 'editor config', foi clicado com o lado direito do mouse e criado esse arquivo
+# A intencao aqui eh padronizar a formatacao de codigo e outras features independente da IDE que esteja
+# sendo utilizada pelos demais membros da equipe
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = false
