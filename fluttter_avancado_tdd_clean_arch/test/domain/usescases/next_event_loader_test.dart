@@ -11,12 +11,18 @@ class NextEventLoader {
   }
 }
 
-class LoadNextEventRepository {
+abstract class LoadNextEventRepository {
+  Future<void> loadNextEvent({required String groupId});
+}
+
+class LoadNextEventMockRepository implements LoadNextEventRepository {
+  //As propriedaes callsCount e groupId sao exclusivas para realizar os testes e nao irao para o codigo em producao
   var callsCount = 0;
   String? groupId;
+
+  @override
   Future<void> loadNextEvent({required String groupId}) async {
     this.groupId = groupId;
-    //
     callsCount++;
   }
 }
@@ -24,7 +30,7 @@ class LoadNextEventRepository {
 void main() {
   test('should load event data from a repository', () async {
     final groupId = Random().nextInt(50000).toString();
-    final repo = LoadNextEventRepository();
+    final repo = LoadNextEventMockRepository();
     final sut = NextEventLoader(repo: repo);
     await sut(groupId: groupId);
     expect(repo.groupId, groupId);
@@ -33,7 +39,7 @@ void main() {
   test('should load event data from a repository', () async {
     //Esse test tem como objetivo evitar que se crie problemas de performance chamando uma API mais de uma vez de maneira desnecessária
     final groupId = Random().nextInt(50000).toString();
-    final repo = LoadNextEventRepository();
+    final repo = LoadNextEventMockRepository();
     final sut = NextEventLoader(repo: repo);
     await sut(groupId: groupId);
     expect(repo.callsCount, 1);
