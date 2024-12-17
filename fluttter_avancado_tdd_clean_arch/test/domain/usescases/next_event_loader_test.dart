@@ -1,75 +1,53 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/repositories/load_next_event_repo.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/usecases/next_event_loader.dart';
 
-class NextEvent {
-  final String groupName;
-  final DateTime date;
-  final List<NextEventPlayer> players;
-
-  NextEvent({
-    required this.groupName,
-    required this.date,
-    required this.players,
-  });
-}
-
-class NextEventLoader {
-  final LoadNextEventRepository repo;
-  NextEventLoader({required this.repo});
-
-  Future<NextEvent> call({required String groupId}) async {
-    return repo.loadNextEvent(groupId: groupId);
-  }
-}
-
-abstract class LoadNextEventRepository {
-  Future<NextEvent> loadNextEvent({required String groupId});
-}
-
-class LoadNextEventMockRepository implements LoadNextEventRepository {
+class LoadNextEventSpyRepository implements LoadNextEventRepository {
   //As propriedaes callsCount e groupId sao exclusivas para realizar os testes e nao irao para o codigo em producao
   var callsCount = 0;
   String? groupId;
   NextEvent? output;
+  Error? error;
 
   @override
   Future<NextEvent> loadNextEvent({required String groupId}) async {
     this.groupId = groupId;
     callsCount++;
+    if (error != null) throw error!;
     return output!;
   }
 }
 
 void main() {
   late String groupId;
-  late LoadNextEventMockRepository repo;
+  late LoadNextEventSpyRepository repo;
   late NextEventLoader sut;
 
   setUp(() {
     groupId = Random().nextInt(50000).toString();
-    repo = LoadNextEventMockRepository();
+    repo = LoadNextEventSpyRepository();
     repo.output = NextEvent(
       groupName: 'Any group name',
       date: DateTime.now(),
       players: [
         NextEventPlayer(
-          id: 'any id 1',
-          name: 'any name 1',
-          isConfirmed: true,
-          photo: '',
-          position: 'any position 1',
-          confirmationDate: DateTime.now()
-        ),
+            id: 'any id 1',
+            name: 'any name 1',
+            isConfirmed: true,
+            photo: '',
+            position: 'any position 1',
+            confirmationDate: DateTime.now()),
         NextEventPlayer(
-          id: 'any id 2',
-          name: 'any name 2',
-          isConfirmed: false,
-          photo: '',
-          position: 'any position 2',
-          confirmationDate: DateTime.now()
-        ),
+            id: 'any id 2',
+            name: 'any name 2',
+            isConfirmed: false,
+            photo: '',
+            position: 'any position 2',
+            confirmationDate: DateTime.now()),
       ],
     );
     sut = NextEventLoader(repo: repo);
@@ -103,5 +81,13 @@ void main() {
     expect(event.players[1].isConfirmed, repo.output?.players[1].isConfirmed);
     expect(event.players[1].confirmationDate,
         repo.output?.players[1].confirmationDate);
+  });
+
+  test('should rethrow on error', () async {
+    //Esse teste garante que nao sera colocado um try catch aqui, pois este erro nao sera tratado nesse momento.
+    final error = Error();
+    repo.error = error;
+    final future = sut(groupId: groupId);
+    expect(future, throwsA(error));
   });
 }
