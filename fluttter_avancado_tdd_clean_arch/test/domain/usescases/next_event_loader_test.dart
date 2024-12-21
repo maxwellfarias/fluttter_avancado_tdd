@@ -1,10 +1,11 @@
-import 'dart:math';
-
-import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/repositories/load_next_event_repo.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/usecases/next_event_loader.dart';
+
+import 'package:flutter_test/flutter_test.dart';
+
+import '../../helpers/fakes.dart';
 
 class LoadNextEventSpyRepository implements LoadNextEventRepository {
   //As propriedaes callsCount e groupId sao exclusivas para realizar os testes e nao irao para o codigo em producao
@@ -28,7 +29,7 @@ void main() {
   late NextEventLoader sut;
 
   setUp(() {
-    groupId = Random().nextInt(50000).toString();
+    groupId = anyString();
     repo = LoadNextEventSpyRepository();
     repo.output = NextEvent(
       groupName: 'Any group name',
