@@ -19,7 +19,10 @@ class LoadNextEventHttpRepository {
 
   Future<void> loadNextEvent({required String groupId}) async {
     final uri = Uri.parse(url.replaceFirst(':groupId', groupId));
-    await httpClient.get(uri);
+    await httpClient.get(uri, headers: {
+      'content-type': 'application/json',
+      'accept': 'application/json',
+    });
   }
 }
 
@@ -29,6 +32,7 @@ class HttpClientSpy implements Client {
   String? method;
   String? url;
   int callsCount = 0;
+  Map<String, String>? headers;
 
   @override
   void close() {}
@@ -44,6 +48,7 @@ class HttpClientSpy implements Client {
     method = 'get';
     callsCount++;
     this.url = url.toString();
+    this.headers = headers;
     return Response('', 200);
   }
 
@@ -87,23 +92,36 @@ class HttpClientSpy implements Client {
 }
 
 void main() {
+  late final String groupId;
+  late final String url;
+  late final HttpClientSpy httpClient;
+  late final LoadNextEventHttpRepository sut;
+
+  setUpAll(() {
+    //Na url abaixo foi colocado :groupId para simular um parâmetro que será substituído pelo valor de groupId. Adicionar : antes do nome do parâmetro é uma convenção do backend
+    url = 'https://domain.com/api/groups/:groupId/next_event';
+  });
+
+  setUp(() {
+    groupId = anyString();
+    httpClient = HttpClientSpy();
+    sut = LoadNextEventHttpRepository(httpClient: httpClient, url: url);
+  });
+
   test('should request with correct method', () async {
-    final groupId = anyString();
-    final httpClient = HttpClientSpy();
-     const url = 'https://domain.com/api/groups/:groupId/next_event';
-    final sut = LoadNextEventHttpRepository(httpClient: httpClient, url: url);
     await sut.loadNextEvent(groupId: groupId);
     expect(httpClient.method, 'get');
     expect(httpClient.callsCount, 1);
   });
 
   test('should request with correct url', () async {
-    final groupId = anyString();
-    //Na url abaixo foi colocado :groupId para simular um parâmetro que será substituído pelo valor de groupId. Adicionar : antes do nome do parâmetro é uma convenção do backend
-    const url = 'https://domain.com/api/groups/:groupId/next_event';
-    final httpClient = HttpClientSpy();
-    final sut = LoadNextEventHttpRepository(httpClient: httpClient, url: url);
     await sut.loadNextEvent(groupId: groupId);
-    expect(httpClient.url, 'https://domain.com/api/groups/${groupId}/next_event');
+    expect(httpClient.url, 'https://domain.com/api/groups/$groupId/next_event');
+  });
+
+  test('should request with correct headers', () async {
+    await sut.loadNextEvent(groupId: groupId);
+    expect(httpClient.headers?['content-type'], 'application/json');
+    expect(httpClient.headers?['accept'], 'application/json');
   });
 }
