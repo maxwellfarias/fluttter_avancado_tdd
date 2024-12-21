@@ -1,14 +1,21 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/repositories/load_next_event_repo.dart';
 import 'package:http/http.dart';
 
 import '../../helpers/fakes.dart';
 
-class LoadNextEventHttpRepository {
+enum DomainError {
+  unexpected,
+  sessionExpired,
+}
+
+class LoadNextEventHttpRepository implements LoadNextEventRepository {
   final Client httpClient;
   final String url;
 
@@ -17,22 +24,57 @@ class LoadNextEventHttpRepository {
     required this.url,
   });
 
-  Future<void> loadNextEvent({required String groupId}) async {
+  @override
+  Future<NextEvent> loadNextEvent({required String groupId}) async {
     final uri = Uri.parse(url.replaceFirst(':groupId', groupId));
-    await httpClient.get(uri, headers: {
+    final response = await httpClient.get(uri, headers: {
       'content-type': 'application/json',
       'accept': 'application/json',
     });
+    switch (response.statusCode) {
+      case 200:
+        break;
+      case 401:
+        throw DomainError.sessionExpired;
+      default:
+        throw DomainError.unexpected;
+    }
+
+    final event = jsonDecode(response.body);
+    return NextEvent(
+      groupName: event['groupName'],
+      date: DateTime.parse(event['date']),
+      //Ao fazer o map, é preciso especificar o tipo de dado que será retornado, no caso, NextEventPlayer
+      players: event['players']
+          .map<NextEventPlayer>((player) => NextEventPlayer(
+              id: player['id'],
+              name: player['name'],
+              isConfirmed: player['isConfirmed'],
+              position: player['position'],
+              photo: player['photo'],
+              confirmationDate:
+                  //tryParse retorna null se não conseguir converter a string para DateTime, como é possivel que a data venha nula, foi colocado ?? '' para evitar erro.
+                  DateTime.tryParse(player['confirmationDate'] ?? '')))
+          .toList(),
+    );
   }
 }
 
 //Interface segregation principle was violated here because the HttpClientSpy class has to implement all the methods of the Client interface even though it only uses the get method.
 class HttpClientSpy implements Client {
-  //Se fosse realizado chamada para outros métodos, seria interessante criar várias variáveis para armazenar o método chamado e a quantidade de chamadas
+  //Se fosse realizado chamada para outros métodos, seria interessante criar variáveis para armazenar o método chamado e a quantidade de chamadas
   String? method;
   String? url;
   int callsCount = 0;
   Map<String, String>? headers;
+  String responseJson = '';
+  int statusCode = 200;
+
+  void simulateBadRequestError() => statusCode = 400;
+  void simulateUnauthorizedError() => statusCode = 401;
+  void simulateForbiddenError() => statusCode = 403;
+  void simulateNotFoundError() => statusCode = 404;
+  void simulateServerError() => statusCode = 500;
 
   @override
   void close() {}
@@ -49,7 +91,7 @@ class HttpClientSpy implements Client {
     callsCount++;
     this.url = url.toString();
     this.headers = headers;
-    return Response('', 200);
+    return Response(responseJson, statusCode);
   }
 
   @override
@@ -92,10 +134,10 @@ class HttpClientSpy implements Client {
 }
 
 void main() {
-  late final String groupId;
-  late final String url;
-  late final HttpClientSpy httpClient;
-  late final LoadNextEventHttpRepository sut;
+  late String groupId;
+  late String url;
+  late HttpClientSpy httpClient;
+  late LoadNextEventHttpRepository sut;
 
   setUpAll(() {
     //Na url abaixo foi colocado :groupId para simular um parâmetro que será substituído pelo valor de groupId. Adicionar : antes do nome do parâmetro é uma convenção do backend
@@ -105,6 +147,28 @@ void main() {
   setUp(() {
     groupId = anyString();
     httpClient = HttpClientSpy();
+    //Sempre que tiver campos opcionais, é interessante fazer testes com eles preenchidos e vazios
+    httpClient.responseJson = '''
+    {
+      "groupName": "any name",
+      "date": "2024-08-30T10:30:00",
+      "players": [
+        {
+          "id": "id 1",
+          "name": "name 1",
+          "isConfirmed": true
+        },
+        {
+          "id": "id 2",
+          "name": "name 2",
+          "position": "position 2",
+          "photo": "photo 2",
+          "confirmationDate": "2024-08-29T11:00:00",
+          "isConfirmed": true
+        }
+      ]
+    }
+    ''';
     sut = LoadNextEventHttpRepository(httpClient: httpClient, url: url);
   });
 
@@ -124,4 +188,49 @@ void main() {
     expect(httpClient.headers?['content-type'], 'application/json');
     expect(httpClient.headers?['accept'], 'application/json');
   });
+
+  test('should return next event with 200', () async {
+    final event = await sut.loadNextEvent(groupId: groupId);
+    expect(event.groupName, 'any name');
+    expect(event.date, DateTime(2024, 8, 30, 10, 30));
+    expect(event.players[0].id, 'id 1');
+    expect(event.players[0].name, 'name 1');
+    expect(event.players[0].isConfirmed, true);
+    expect(event.players[1].id, 'id 2');
+    expect(event.players[1].name, 'name 2');
+    expect(event.players[1].position, 'position 2');
+    expect(event.players[1].photo, 'photo 2');
+    expect(event.players[1].confirmationDate, DateTime(2024, 8, 29, 11, 0));
+    expect(event.players[1].isConfirmed, true);
+  });
+
+  test('should throw UnexpextedError on 400', () async {
+    httpClient.simulateBadRequestError();
+    final future = sut.loadNextEvent(groupId: groupId);
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('should throw UnexpextedError on 401', () async {
+    httpClient.simulateUnauthorizedError();
+    final future = sut.loadNextEvent(groupId: groupId);
+    expect(future, throwsA(DomainError.sessionExpired));
+  });
+  test('should throw UnexpextedError on 403', () async {
+    httpClient.simulateForbiddenError();
+    final future = sut.loadNextEvent(groupId: groupId);
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('should throw UnexpextedError on 404', () async {
+    httpClient.simulateNotFoundError();
+    final future = sut.loadNextEvent(groupId: groupId);
+    expect(future, throwsA(DomainError.unexpected));
+  });
+  test('should throw UnexpextedError on 500', () async {
+    httpClient.simulateServerError();
+    final future = sut.loadNextEvent(groupId: groupId);
+    expect(future, throwsA(DomainError.unexpected));
+  });
 }
+
+//TODO: 
