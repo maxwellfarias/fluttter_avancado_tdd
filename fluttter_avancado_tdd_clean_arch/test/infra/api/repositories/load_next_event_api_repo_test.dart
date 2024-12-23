@@ -1,10 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/repositories/load_next_event_repo.dart';
 
 import '../../../helpers/fakes.dart';
 
-class LoadNextEventApiRepository {
+class LoadNextEventApiRepository implements LoadNextEventRepository {
   final HttpGetClient httpClient;
   final String url;
   LoadNextEventApiRepository({
@@ -12,6 +13,7 @@ class LoadNextEventApiRepository {
     required this.url,
   });
 
+  @override
   Future<NextEvent> loadNextEvent({required String groupId}) async {
     final event = await httpClient.get(url: url, params: {"groupId": groupId});
     return NextEvent(
@@ -34,7 +36,7 @@ class LoadNextEventApiRepository {
 }
 
 abstract class HttpGetClient {
-    //O retorno foi colocado como dinamico, porque ele pode ser um Map ou um array com varios Maps dentron dele.
+  //O retorno foi colocado como dinamico, porque ele pode ser um Map ou um array com varios Maps dentron dele.
   Future<dynamic> get({required String url, Map<String, String>? params});
 }
 
@@ -43,6 +45,7 @@ class HttpGetClientSpy implements HttpGetClient {
   int callsCount = 0;
   Map<String, String>? params;
   dynamic response;
+  Error? error;
 
   @override
   Future<dynamic> get(
@@ -50,6 +53,9 @@ class HttpGetClientSpy implements HttpGetClient {
     callsCount++;
     this.url = url;
     this.params = params;
+    if (error != null) {
+      throw error!;
+    }
     return response;
   }
 }
@@ -64,16 +70,11 @@ void main() {
     groupId = anyString();
     url = anyString();
     httpClient = HttpGetClientSpy();
-    httpClient.response =
-    {
+    httpClient.response = {
       "groupName": "any name",
       "date": "2024-08-30T10:30:00",
       "players": [
-        {
-          "id": "id 1",
-          "name": "name 1",
-          "isConfirmed": true
-        },
+        {"id": "id 1", "name": "name 1", "isConfirmed": true},
         {
           "id": "id 2",
           "name": "name 2",
@@ -83,8 +84,7 @@ void main() {
           "isConfirmed": true
         }
       ]
-    }
-    ;
+    };
     sut = LoadNextEventApiRepository(httpClient: httpClient, url: url);
   });
 
@@ -108,5 +108,12 @@ void main() {
     expect(event.players[1].photo, 'photo 2');
     expect(event.players[1].confirmationDate, DateTime(2024, 8, 29, 11, 0));
     expect(event.players[1].isConfirmed, true);
+  });
+
+  test('should rethrow on error', () async {
+    final error = Error();
+    httpClient.error = error;
+    final future = sut.loadNextEvent(groupId: groupId);
+    expect(future, throwsA(error));
   });
 }
