@@ -16,23 +16,34 @@ class LoadNextEventApiRepository implements LoadNextEventRepository {
   @override
   Future<NextEvent> loadNextEvent({required String groupId}) async {
     final event = await httpClient.get(url: url, params: {"groupId": groupId});
-    return NextEvent(
-      groupName: event['groupName'],
-      date: DateTime.parse(event['date']),
-      //Ao fazer o map, é preciso especificar o tipo de dado que será retornado, no caso, NextEventPlayer
-      players: event['players']
-          .map<NextEventPlayer>((player) => NextEventPlayer(
-              id: player['id'],
-              name: player['name'],
-              isConfirmed: player['isConfirmed'],
-              position: player['position'],
-              photo: player['photo'],
-              confirmationDate:
-                  //tryParse retorna null se não conseguir converter a string para DateTime, como é possivel que a data venha nula, foi colocado ?? '' para evitar erro.
-                  DateTime.tryParse(player['confirmationDate'] ?? '')))
-          .toList(),
-    );
+    return NextEventMapper.toObject(event);
   }
+}
+
+class NextEventMapper {
+  static NextEvent toObject(Map<String, dynamic> json) => NextEvent(
+        groupName: json['groupName'],
+        date: DateTime.parse(json['date']),
+        //Ao fazer o map, é preciso especificar o tipo de dado que será retornado, no caso, NextEventPlayer
+        players: NextEventPlayerMapper.toList(json['players']),
+      );
+}
+
+class NextEventPlayerMapper {
+  static List<NextEventPlayer> toList(List<Map<String, dynamic>> arr) =>
+      arr.map(NextEventPlayerMapper.toObject).toList();
+
+  static NextEventPlayer toObject(Map<String, dynamic> json) => NextEventPlayer(
+      id: json['id'],
+      name: json['name'],
+      isConfirmed: json['isConfirmed'],
+      position: json['position'],
+      photo: json['photo'],
+      confirmationDate:
+          //tryParse retorna null se não conseguir converter a string para DateTime, como é possivel que a data venha nula, foi colocado ?? '' para evitar erro.
+          DateTime.tryParse(
+        json['confirmationDate'] ?? '',
+      ));
 }
 
 abstract class HttpGetClient {
