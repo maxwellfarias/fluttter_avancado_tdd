@@ -15,7 +15,7 @@ class LoadNextEventApiRepository implements LoadNextEventRepository {
 
   @override
   Future<NextEvent> loadNextEvent({required String groupId}) async {
-    final event = await httpClient.get(url: url, params: {"groupId": groupId});
+    final event = await httpClient.get<Map<String, dynamic>>(url: url, params: {"groupId": groupId});
     return NextEventMapper.toObject(event);
   }
 }
@@ -46,9 +46,11 @@ class NextEventPlayerMapper {
       ));
 }
 
+//TODO: Explicar o porque colocar essa abstracao - Essa abstração é necessária a fim de evitar que caso seja necessário fazer uma modificação futura adicionando outro parametro no reposi..
 abstract class HttpGetClient {
-  //O retorno foi colocado como dinamico, porque ele pode ser um Map ou um array com varios Maps dentron dele.
-  Future<dynamic> get({required String url, Map<String, String>? params});
+  //O retorno tinha sido colocado como dinamico, porque ele pode ser um Map ou um array com varios Maps dentron dele. Posteriormente foi substituido por um tipo generico de modo que
+  //quem chama o metodo, declara o tipo que espera ser retornado.
+  Future<T> get<T>({required String url, Map<String, String>? params});
 }
 
 class HttpGetClientSpy implements HttpGetClient {
@@ -59,7 +61,7 @@ class HttpGetClientSpy implements HttpGetClient {
   Error? error;
 
   @override
-  Future<dynamic> get(
+  Future<T> get<T>(
       {required String url, Map<String, String>? params}) async {
     callsCount++;
     this.url = url;
