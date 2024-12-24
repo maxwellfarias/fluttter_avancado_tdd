@@ -5,12 +5,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/repositories/load_next_event_http_repo.dart';
 
 import '../../../helpers/fakes.dart';
-import '../clients/http_client_spy.dart';
+import '../clients/client_spy.dart';
 
 void main() {
   late String groupId;
   late String url;
-  late HttpClientSpy httpClient;
+  late ClientSpy httpClient;
   late LoadNextEventHttpRepository sut;
 
   setUpAll(() {
@@ -20,7 +20,7 @@ void main() {
 
   setUp(() {
     groupId = anyString();
-    httpClient = HttpClientSpy();
+    httpClient = ClientSpy();
     //Sempre que tiver campos opcionais, é interessante fazer testes com eles preenchidos e vazios
     httpClient.responseJson = '''
     {

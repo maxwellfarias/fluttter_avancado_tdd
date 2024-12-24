@@ -1,79 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/domain/repositories/load_next_event_repo.dart';
-
+import 'package:fluttter_avancado_tdd_clean_arch/infra/api/repositories/load_next_event_api_repo.dart';
 import '../../../helpers/fakes.dart';
-
-class LoadNextEventApiRepository implements LoadNextEventRepository {
-  final HttpGetClient httpClient;
-  final String url;
-  LoadNextEventApiRepository({
-    required this.httpClient,
-    required this.url,
-  });
-
-  @override
-  Future<NextEvent> loadNextEvent({required String groupId}) async {
-    final event = await httpClient.get<Map<String, dynamic>>(url: url, params: {"groupId": groupId});
-    return NextEventMapper.toObject(event);
-  }
-}
-
-class NextEventMapper {
-  static NextEvent toObject(Map<String, dynamic> json) => NextEvent(
-        groupName: json['groupName'],
-        date: DateTime.parse(json['date']),
-        //Ao fazer o map, é preciso especificar o tipo de dado que será retornado, no caso, NextEventPlayer
-        players: NextEventPlayerMapper.toList(json['players']),
-      );
-}
-
-class NextEventPlayerMapper {
-  static List<NextEventPlayer> toList(List<Map<String, dynamic>> arr) =>
-      arr.map(NextEventPlayerMapper.toObject).toList();
-
-  static NextEventPlayer toObject(Map<String, dynamic> json) => NextEventPlayer(
-      id: json['id'],
-      name: json['name'],
-      isConfirmed: json['isConfirmed'],
-      position: json['position'],
-      photo: json['photo'],
-      confirmationDate:
-          //tryParse retorna null se não conseguir converter a string para DateTime, como é possivel que a data venha nula, foi colocado ?? '' para evitar erro.
-          DateTime.tryParse(
-        json['confirmationDate'] ?? '',
-      ));
-}
-
-//TODO: Explicar o porque colocar essa abstracao - Essa abstração é necessária a fim de evitar que caso seja necessário fazer uma modificação futura adicionando outro parametro no reposi..
-abstract class HttpGetClient {
-  //O retorno tinha sido colocado como dinamico, porque ele pode ser um Map ou um array com varios Maps dentron dele. Posteriormente foi substituido por um tipo generico de modo que
-  //quem chama o metodo, declara o tipo que espera ser retornado.
-  Future<T> get<T>({required String url, Map<String, String>? params});
-}
-
-class HttpGetClientSpy implements HttpGetClient {
-  String? url;
-  int callsCount = 0;
-  Map<String, String>? params;
-  dynamic response;
-  Error? error;
-
-  @override
-  Future<T> get<T>(
-      {required String url, Map<String, String>? params}) async {
-    callsCount++;
-    this.url = url;
-    this.params = params;
-    if (error != null) {
-      throw error!;
-    }
-    return response;
-  }
-}
+import '../clients/http_get_client_spy.dart';
 
 void main() {
+    //:Os nomes das propriedades que sao usadas nos testes são variáveis de controle.
   late String groupId;
   late String url;
   late HttpGetClientSpy httpClient;

@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart';
 
 //Interface segregation principle was violated here because the HttpClientSpy class has to implement all the methods of the Client interface even though it only uses the get method.
-class HttpClientSpy implements Client {
+class ClientSpy implements Client {
   //Se fosse realizado chamada para outros métodos, seria interessante criar variáveis para armazenar o método chamado e a quantidade de chamadas
   String? method;
   String? url;
