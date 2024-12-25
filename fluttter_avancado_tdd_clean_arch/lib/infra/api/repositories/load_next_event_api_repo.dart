@@ -11,7 +11,6 @@ class LoadNextEventApiRepository implements LoadNextEventRepository {
     required this.httpClient,
     required this.url,
   });
-
   @override
   Future<NextEvent> loadNextEvent({required String groupId}) async {
     final event =

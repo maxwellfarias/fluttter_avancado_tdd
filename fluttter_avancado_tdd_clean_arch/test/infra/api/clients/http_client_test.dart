@@ -1,5 +1,7 @@
 import 'package:dartx/dartx.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/domain_error.dart';
 import 'package:http/http.dart';
 
 import '../../../helpers/fakes.dart';
@@ -12,6 +14,9 @@ class HttpClient {
 
   HttpClient({required this.client});
 
+//:Por ser um treinamento, foi colocado a queryString apenas para mostrar como essa funcionalidade poderia ser implementada,
+//na prática, isso fere o YAGNI principle ("You Aren't Gonna Need It"), um vez que só deve ser implementado algo que de fato
+//será usado.
   Future<void> get(
       {required String url,
       Map<String, String>? headers,
@@ -21,7 +26,12 @@ class HttpClient {
       ..addAll(
           {'content-type': 'application/json', 'accept': 'application/json'});
     final uri = _buildUri(url: url, params: params, queryString: queryString);
-    await client.get(uri, headers: allHeaders);
+    final response = await client.get(uri, headers: allHeaders);
+    switch (response.statusCode) {
+      case 200: break;
+      default:
+        throw DomainError.unexpected;
+    }
   }
 
   Uri _buildUri(
@@ -114,6 +124,12 @@ void main() {
           queryString: {'q1': 'v1', 'q2': 'v2'},
           params: {'p3': 'v3', 'p4': 'v4'});
       expect(client.url, 'http://anyurl.com/users/v3/v4?q1=v1&q2=v2');
+    });
+
+    test('should throw UnexpextedError on 400', () async {
+      client.simulateBadRequestError();
+      final future = sut.get(url: url);
+      expect(future, throwsA(DomainError.unexpected));
     });
   });
 }
