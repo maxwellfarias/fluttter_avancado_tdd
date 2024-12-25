@@ -33,6 +33,14 @@ class HttpClient {
     switch (response.statusCode) {
       case 200:
         {
+          //19:13
+          //: O jsonDecode retorna um valor dynamic, esse valor pode ser de dois tipos, um Map ou uma lista de Maps. Pode ser feito um casting dentro desse adapter ou usando o Mapper
+          //que foi criado para converter esses dados na camada do Repository. Se o tipo genérico não for informado quando chamar a função 'get, o dart irá inferir o valor de acordo
+          //com quem irá recebê-lo: Json data = client.get(url: url) - Nesse caso o genérico passado será do tipo json. Se não for especificado, a função assumirá que o valor genérico é
+          //dynamic. Quando o valor genérico atribuído fosse do tipo JsonArr e não fosse feito o casting abaixo, seria gerado um erro: type 'List<dynamic>' is not a subtype of type 'FutureOr<List<Map<String, dynamic>>>'
+          //porque em dart não é possível fazer casting de uma list da seguinte forma: List<B> as List<A>. Isso se dá devido à invariância em coleções.
+          //O Dart tenta garantir que os elementos da lista sejam compatíveis. Isso falha, pois List<B> e List<A> são considerados tipos distintos, mesmo que B seja um subtipo de A.
+          //Assim, é necessário fazer o casting de uma lista por meio de uma iteração de cada elemento e em seguida retornando uma lista.
           final data = jsonDecode(response.body);
           return (T == JsonArr)
               ? data.map<Json>((e) => e as Json).toList()
@@ -189,6 +197,42 @@ void main() {
       final data = await sut.get<JsonArr>(url: url);
       expect(data[0]['key'], 'value1');
       expect(data[1]['key'], 'value2');
+    });
+
+    test('should return a map without typing', () async {
+      final data = await sut.get(url: url);
+      expect(data['key1'], 'value1');
+      expect(data['key2'], 'value2');
+    });
+
+    test('should return a List without typing', () async {
+      client.responseJson = '''
+    [{
+      "key": "value1"
+    }, {
+      "key": "value2"
+    }]
+    ''';
+      final data = await sut.get(url: url);
+      expect(data[0]['key'], 'value1');
+      expect(data[1]['key'], 'value2');
+    });
+
+    test('should return a Map with a List', () async {
+      client.responseJson = '''
+    {
+        "key1": "value1",
+        "key2": [{
+            "key": "value1"
+            },{
+            "key": "value2"
+            }]
+        }
+    ''';
+      final data = await sut.get(url: url);
+      expect(data['key1'], 'value1');
+      expect(data['key2'][0]["key"], 'value1');
+      expect(data['key2'][1]["key"], 'value2');
     });
   });
 }
