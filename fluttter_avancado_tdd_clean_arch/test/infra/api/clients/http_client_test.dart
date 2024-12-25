@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dartx/dartx.dart';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -17,7 +19,7 @@ class HttpClient {
 //:Por ser um treinamento, foi colocado a queryString apenas para mostrar como essa funcionalidade poderia ser implementada,
 //na prática, isso fere o YAGNI principle ("You Aren't Gonna Need It"), um vez que só deve ser implementado algo que de fato
 //será usado.
-  Future<void> get(
+  Future<T> get<T>(
       {required String url,
       Map<String, String>? headers,
       Map<String, String?>? params,
@@ -28,7 +30,10 @@ class HttpClient {
     final uri = _buildUri(url: url, params: params, queryString: queryString);
     final response = await client.get(uri, headers: allHeaders);
     switch (response.statusCode) {
-      case 200: break;
+      case 200:
+        return jsonDecode(response.body);
+      case 401:
+        throw DomainError.sessionExpired;
       default:
         throw DomainError.unexpected;
     }
@@ -64,6 +69,12 @@ void main() {
   setUp(() {
     url = anyString();
     client = ClientSpy();
+    client.responseJson = '''
+    {
+      "key1": "value1",
+      "key2": "value2"
+    }
+    ''';
     sut = HttpClient(client: client);
   });
 
@@ -130,6 +141,35 @@ void main() {
       client.simulateBadRequestError();
       final future = sut.get(url: url);
       expect(future, throwsA(DomainError.unexpected));
+    });
+
+    test('should throw UnexpextedError on 401', () async {
+      client.simulateUnauthorizedError();
+      final future = sut.get(url: url);
+      expect(future, throwsA(DomainError.sessionExpired));
+    });
+
+    test('should throw UnexpextedError on 403', () async {
+      client.simulateForbiddenError();
+      final future = sut.get(url: url);
+      expect(future, throwsA(DomainError.unexpected));
+    });
+
+    test('should throw UnexpextedError on 404', () async {
+      client.simulateNotFoundError();
+      final future = sut.get(url: url);
+      expect(future, throwsA(DomainError.unexpected));
+    });
+    test('should throw UnexpextedError on 500', () async {
+      client.simulateServerError();
+      final future = sut.get(url: url);
+      expect(future, throwsA(DomainError.unexpected));
+    });
+
+    test('should return a map', () async {
+      final data = await sut.get(url: url);
+      expect(data['key1'], 'value1');
+      expect(data['key2'], 'value2');
     });
   });
 }
