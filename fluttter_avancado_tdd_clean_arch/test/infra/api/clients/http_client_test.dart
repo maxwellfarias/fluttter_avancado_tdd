@@ -11,10 +11,21 @@ class HttpClient {
 
   HttpClient({required this.client});
 
-  Future<void> get({required String url, Map<String, String>? headers}) async {
-    final allHeaders = (headers ?? {})..addAll(
-        {'content-type': 'application/json', 'accept': 'application/json'});
-    await client.get(Uri.parse(url), headers: allHeaders);
+  Future<void> get(
+      {required String url,
+      Map<String, String>? headers,
+      Map<String, String?>? params}) async {
+    final allHeaders = (headers ?? {})
+      ..addAll(
+          {'content-type': 'application/json', 'accept': 'application/json'});
+    final uri = _buildUri(url: url, params: params);
+    await client.get(uri, headers: allHeaders);
+  }
+
+  Uri _buildUri({required String url, required Map<String, String?>? params}) {
+    params?.forEach((key, value) => url = url.replaceFirst(':$key', value ?? ''));
+    if(url.endsWith('/')) url = url.substring(0, url.length - 1);
+    return Uri.parse(url);
   }
 }
 
@@ -53,6 +64,24 @@ void main() {
       await sut.get(url: url, headers: {'h1': 'value 1', 'h2': 'value 2'});
       expect(client.headers?['h1'], 'value 1');
       expect(client.headers?['h2'], 'value 2');
+    });
+
+    test('should request with correct params', () async {
+      url = 'http://anyurl.com/users/:p1/:p2';
+      await sut.get(url: url, params: {'p1': 'v1', 'p2': 'v2'});
+      expect(client.url, 'http://anyurl.com/users/v1/v2');
+    });
+
+    test('should request with optional param', () async {
+      url = 'http://anyurl.com/users/:p1/:p2';
+      await sut.get(url: url, params: {'p1': 'v1', 'p2': null});
+      expect(client.url, 'http://anyurl.com/users/v1');
+    });
+
+    test('should request with invalid params', () async {
+      url = 'http://anyurl.com/users/:p1/:p2';
+      await sut.get(url: url, params: {'p3': 'v3'});
+      expect(client.url, 'http://anyurl.com/users/:p1/:p2');
     });
   });
 }
