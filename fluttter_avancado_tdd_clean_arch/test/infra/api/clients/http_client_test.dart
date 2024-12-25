@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 
@@ -23,15 +24,24 @@ class HttpClient {
     await client.get(uri, headers: allHeaders);
   }
 
-  Uri _buildUri({required String url, required Map<String, String?>? params, Map<String, String>? queryString}) {
-    params
-        ?.forEach((key, value) => url = url.replaceFirst(':$key', value ?? ''));
-    if (url.endsWith('/')) url = url.substring(0, url.length - 1);
-    if(queryString != null) {
-      url += '?';
-      queryString.forEach((key, value) => url += '$key=$value&');
-      url = url.substring(0, url.length - 1);
-    }
+  Uri _buildUri(
+      {required String url,
+      required Map<String, String?>? params,
+      Map<String, String>? queryString}) {
+    url = params?.keys
+            .fold(
+              url,
+              (result, key) => result.replaceFirst(':$key', params[key] ?? ''),
+            )
+            .removeSuffix('/') ??
+        url;
+    //: Foi utilizado a lib dartx a fim de remover um determinado caracter, caso este exista.
+    //fold faz com que a cada interação, o valor que é retonado acumule no campo 'result' que é reusado a cada interação.
+    url = queryString?.keys
+            .fold('$url?', (result, key) => '$result$key=${queryString[key]}&')
+            .removeSuffix('&') ??
+        url;
+
     return Uri.parse(url);
   }
 }
@@ -99,7 +109,10 @@ void main() {
 
     test('should request with correct queryStrings and params', () async {
       url = 'http://anyurl.com/users/:p3/:p4';
-      await sut.get(url: url, queryString: {'q1': 'v1', 'q2': 'v2'}, params: {'p3':'v3', 'p4': 'v4'});
+      await sut.get(
+          url: url,
+          queryString: {'q1': 'v1', 'q2': 'v2'},
+          params: {'p3': 'v3', 'p4': 'v4'});
       expect(client.url, 'http://anyurl.com/users/v3/v4?q1=v1&q2=v2');
     });
   });
