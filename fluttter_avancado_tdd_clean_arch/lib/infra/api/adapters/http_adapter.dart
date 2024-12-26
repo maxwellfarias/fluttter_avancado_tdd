@@ -18,17 +18,19 @@ class HttpAdapter implements HttpGetClient {
 //:Por ser um treinamento, foi colocado a queryString apenas para mostrar como essa funcionalidade poderia ser implementada,
 //na prática, isso fere o YAGNI principle ("You Aren't Gonna Need It"), um vez que só deve ser implementado algo que de fato
 //será usado.
-@override
+  @override
   Future<T> get<T>(
       {required String url,
       Map<String, String>? headers,
       Map<String, String?>? params,
       Map<String, String>? queryString}) async {
-    final allHeaders = (headers ?? {})
-      ..addAll(
-          {'content-type': 'application/json', 'accept': 'application/json'});
-    final uri = _buildUri(url: url, params: params, queryString: queryString);
-    final response = await client.get(uri, headers: allHeaders);
+    final response = await client.get(
+        _buildUri(url: url, params: params, queryString: queryString),
+        headers: _buildHeaders(url: url, headers: headers));
+    return _handleResponse(response);
+  }
+
+  T? _handleResponse<T>(Response response) {
     switch (response.statusCode) {
       case 200:
         {
@@ -51,15 +53,20 @@ class HttpAdapter implements HttpGetClient {
     }
   }
 
+  Map<String, String> _buildHeaders({
+    required String url,
+    Map<String, String>? headers,
+  }) {
+    return (headers ?? {})
+      ..addAll({'content-type': 'application/json', 'accept': 'application/json'});
+  }
+
   Uri _buildUri(
       {required String url,
       required Map<String, String?>? params,
       Map<String, String>? queryString}) {
     url = params?.keys
-            .fold(
-              url,
-              (result, key) => result.replaceFirst(':$key', params[key] ?? ''),
-            )
+            .fold(url, (result, key) => result.replaceFirst(':$key', params[key] ?? ''))
             .removeSuffix('/') ??
         url;
     //: Foi utilizado a lib dartx a fim de remover um determinado caracter, caso este exista.
