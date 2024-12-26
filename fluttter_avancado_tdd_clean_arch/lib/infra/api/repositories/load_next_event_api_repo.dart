@@ -7,7 +7,7 @@ import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 class LoadNextEventApiRepository implements LoadNextEventRepository {
   final HttpGetClient httpClient;
   final String url;
-  LoadNextEventApiRepository({
+  const LoadNextEventApiRepository({
     required this.httpClient,
     required this.url,
   });

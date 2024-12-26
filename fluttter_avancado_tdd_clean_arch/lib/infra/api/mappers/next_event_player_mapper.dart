@@ -3,7 +3,7 @@ import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_play
 import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 
 
-class NextEventPlayerMapper {
+final class NextEventPlayerMapper {
   static List<NextEventPlayer> toList(JsonArr arr) =>
       arr.map(NextEventPlayerMapper.toObject).toList();
 

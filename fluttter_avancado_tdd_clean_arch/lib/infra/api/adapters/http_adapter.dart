@@ -10,10 +10,10 @@ import 'package:http/http.dart';
 //vindos do Client para ser passado ao Repository, preparando a URL na formatação correta, fazendo o lançamento de erros de acordo com o status code. O critério
 //usado para saber se esse Adapter é necessário foi analisar se quando fosse criado outros Repositories que usassem essa mesma Lib do Http, todos esses serviços
 //ofertados por esse Adapter teriam que ser refeitos no Repository
-class HttpAdapter implements HttpGetClient {
+final class HttpAdapter implements HttpGetClient {
   final Client client;
 
-  HttpAdapter({required this.client});
+  const HttpAdapter({required this.client});
 
 //:Por ser um treinamento, foi colocado a queryString apenas para mostrar como essa funcionalidade poderia ser implementada,
 //na prática, isso fere o YAGNI principle ("You Aren't Gonna Need It"), um vez que só deve ser implementado algo que de fato
