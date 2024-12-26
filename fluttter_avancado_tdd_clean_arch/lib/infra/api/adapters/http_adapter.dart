@@ -2,10 +2,15 @@ import 'dart:convert';
 
 import 'package:dartx/dartx.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/domain_error.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/api/clients/http_get_client.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 import 'package:http/http.dart';
 
-class HttpAdapter {
+//:A função dessa classe é criar uma camada de abstração entre o Repository e o DataSource, neste caso o Client, colocando toda a conversão de valores para DTO
+//vindos do Client para ser passado ao Repository, preparando a URL na formatação correta, fazendo o lançamento de erros de acordo com o status code. O critério
+//usado para saber se esse Adapter é necessário foi analisar se quando fosse criado outros Repositories que usassem essa mesma Lib do Http, todos esses serviços
+//ofertados por esse Adapter teriam que ser refeitos no Repository
+class HttpAdapter implements HttpGetClient {
   final Client client;
 
   HttpAdapter({required this.client});
@@ -13,6 +18,7 @@ class HttpAdapter {
 //:Por ser um treinamento, foi colocado a queryString apenas para mostrar como essa funcionalidade poderia ser implementada,
 //na prática, isso fere o YAGNI principle ("You Aren't Gonna Need It"), um vez que só deve ser implementado algo que de fato
 //será usado.
+@override
   Future<T> get<T>(
       {required String url,
       Map<String, String>? headers,
@@ -26,7 +32,6 @@ class HttpAdapter {
     switch (response.statusCode) {
       case 200:
         {
-          //19:13
           //: O jsonDecode retorna um valor dynamic, esse valor pode ser de dois tipos, um Map ou uma lista de Maps. Pode ser feito um casting dentro desse adapter ou usando o Mapper
           //que foi criado para converter esses dados na camada do Repository. Se o tipo genérico não for informado quando chamar a função 'get, o dart irá inferir o valor de acordo
           //com quem irá recebê-lo: Json data = client.get(url: url) - Nesse caso o genérico passado será do tipo json. Se não for especificado, a função assumirá que o valor genérico é
