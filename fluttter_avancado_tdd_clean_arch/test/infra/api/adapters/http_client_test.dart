@@ -128,7 +128,7 @@ void main() {
       "key": "value2"
     }]
     ''';
-      final data = await sut.get<JsonArr>(url: url);
+      final JsonArr data = await sut.get<JsonArr>(url: url);
       expect(data[0]['key'], 'value1');
       expect(data[1]['key'], 'value2');
     });

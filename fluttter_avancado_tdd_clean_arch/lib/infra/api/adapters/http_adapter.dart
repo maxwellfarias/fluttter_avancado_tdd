@@ -27,10 +27,10 @@ class HttpAdapter implements HttpGetClient {
     final response = await client.get(
         _buildUri(url: url, params: params, queryString: queryString),
         headers: _buildHeaders(url: url, headers: headers));
-    return _handleResponse(response);
+    return _handleResponse<T>(response);
   }
 
-  T? _handleResponse<T>(Response response) {
+  T _handleResponse<T>(Response response) {
     switch (response.statusCode) {
       case 200:
         {
