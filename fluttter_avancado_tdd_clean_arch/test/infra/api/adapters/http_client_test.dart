@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/domain_error.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/errors.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/adapters/http_adapter.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 
@@ -88,30 +88,30 @@ void main() {
     test('should throw UnexpextedError on 400', () async {
       client.simulateBadRequestError();
       final future = sut.get(url: url);
-      expect(future, throwsA(DomainError.unexpected));
+      expect(future, throwsA(const TypeMatcher<UnexpectedError>()));
     });
 
     test('should throw UnexpextedError on 401', () async {
       client.simulateUnauthorizedError();
       final future = sut.get(url: url);
-      expect(future, throwsA(DomainError.sessionExpired));
+      expect(future, throwsA(const TypeMatcher<SessionExpired>()));
     });
 
     test('should throw UnexpextedError on 403', () async {
       client.simulateForbiddenError();
       final future = sut.get(url: url);
-      expect(future, throwsA(DomainError.unexpected));
+      expect(future, throwsA(const TypeMatcher<UnexpectedError>()));
     });
 
     test('should throw UnexpextedError on 404', () async {
       client.simulateNotFoundError();
       final future = sut.get(url: url);
-      expect(future, throwsA(DomainError.unexpected));
+      expect(future, throwsA(const TypeMatcher<UnexpectedError>()));
     });
     test('should throw UnexpextedError on 500', () async {
       client.simulateServerError();
       final future = sut.get(url: url);
-      expect(future, throwsA(DomainError.unexpected));
+      expect(future, throwsA(const TypeMatcher<UnexpectedError>()));
     });
 
     test('should return a map', () async {

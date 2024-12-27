@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dartx/dartx.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/domain_error.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/errors.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/clients/http_get_client.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 import 'package:http/http.dart';
@@ -47,9 +47,9 @@ final class HttpAdapter implements HttpGetClient {
               : data;
         }
       case 401:
-        throw DomainError.sessionExpired;
+        throw SessionExpired();
       default:
-        throw DomainError.unexpected;
+        throw UnexpectedError();
     }
   }
 
