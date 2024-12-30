@@ -6,7 +6,8 @@ import '../../helpers/fakes.dart';
 final class NextEventPage extends StatefulWidget {
   final NextEventPresenter presenter;
   final String groupId;
-  const NextEventPage({required this.presenter, super.key, required this.groupId});
+  const NextEventPage(
+      {required this.presenter, super.key, required this.groupId});
 
   @override
   State<NextEventPage> createState() => _NextEventPageState();
@@ -21,7 +22,9 @@ class _NextEventPageState extends State<NextEventPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return const Scaffold(
+        body: CircularProgressIndicator(),
+    );
   }
 }
 
@@ -41,15 +44,25 @@ final class NextEventPresenterSpy implements NextEventPresenter {
 }
 
 void main() {
-  testWidgets('should load event data on page init', (tester) async {
-    final presenter = NextEventPresenterSpy();
-    final groupId = anyString();
-    //Os widgets que estão sendon testados precisam estar dentro de um material app
-    final sut = MaterialApp(home: NextEventPage(presenter: presenter, groupId: groupId));
-    //Constroi o widget como emulando a aplicação dele em uma tela.
+  late NextEventPresenterSpy presenter;
+  late String groupId;
+  late Widget sut;
 
+  setUp(() {
+    presenter = NextEventPresenterSpy();
+    groupId = anyString();
+    //Os widgets que estão sendon testados precisam estar dentro de um material app
+    sut = MaterialApp(
+        home: NextEventPage(presenter: presenter, groupId: groupId));
+    //Constroi o widget como emulando a aplicação dele em uma tela.
+  });
+  testWidgets('should load event data on page init', (tester) async {
     await tester.pumpWidget(sut);
     expect(presenter.loadCallsCount, 1);
     expect(presenter.groupId, groupId);
+  });
+  testWidgets('should present spinner while data is loading', (tester) async {
+    await tester.pumpWidget(sut);
+    expect(find.byType(CircularProgressIndicator), findsOne);
   });
 }
