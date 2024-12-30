@@ -1,11 +1,14 @@
+import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
+
 abstract interface class HttpGetClient {
   //O retorno tinha sido colocado como dinamico, porque ele pode ser um Map ou um array com varios Maps dentron dele. Posteriormente foi substituido por um tipo generico de modo que
   //quem chama o metodo, declara o tipo que espera ser retornado.
-  Future<T> get<T>(
-      {required String url,
-      Map<String, String>? headers,
-      Map<String, String?>? params,
-      Map<String, String>? queryString});
+  Future<T> get<T>({
+    required String url,
+    Json? headers,
+    Json? params,
+    Json? queryString,
+  });
 }
 /*
 //:Ou eu posso criar uma classe concreta que ira implementar somente o HttpGetClient, ou eu posso fazer algo mais generico criando um http client implementando dentro dele varias interfaces.

@@ -47,15 +47,16 @@ void main() {
     });
 
     test('should append headers', () async {
-      await sut.get(url: url, headers: {'h1': 'value 1', 'h2': 'value 2'});
+      await sut.get(url: url, headers: {'h1': 'value 1', 'h2': 'value 2', 'h3': 123});
       expect(client.headers?['h1'], 'value 1');
       expect(client.headers?['h2'], 'value 2');
+      expect(client.headers?['h3'], '123');
     });
 
     test('should request with correct params', () async {
-      url = 'http://anyurl.com/users/:p1/:p2';
-      await sut.get(url: url, params: {'p1': 'v1', 'p2': 'v2'});
-      expect(client.url, 'http://anyurl.com/users/v1/v2');
+      url = 'http://anyurl.com/users/:p1/:p2/:p3';
+      await sut.get(url: url, params: {'p1': 'v1', 'p2': 'v2', 'p3': 123});
+      expect(client.url, 'http://anyurl.com/users/v1/v2/123');
     });
 
     test('should request with optional param', () async {
@@ -71,9 +72,9 @@ void main() {
     });
 
     test('should request with correct queryStrings', () async {
-      url = 'http://anyurl.com/users/:p1/:p2';
-      await sut.get(url: url, queryString: {'q1': 'v1', 'q2': 'v2'});
-      expect(client.url, '$url?q1=v1&q2=v2');
+      url = 'http://anyurl.com/users/:p1/:p2:p3';
+      await sut.get(url: url, queryString: {'q1': 'v1', 'q2': 'v2', 'q3':123});
+      expect(client.url, '$url?q1=v1&q2=v2&q3=123');
     });
 
     test('should request with correct queryStrings and params', () async {

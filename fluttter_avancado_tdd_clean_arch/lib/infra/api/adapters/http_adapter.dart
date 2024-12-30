@@ -19,11 +19,7 @@ final class HttpAdapter implements HttpGetClient {
 //na prática, isso fere o YAGNI principle ("You Aren't Gonna Need It"), um vez que só deve ser implementado algo que de fato
 //será usado.
   @override
-  Future<T> get<T>(
-      {required String url,
-      Map<String, String>? headers,
-      Map<String, String?>? params,
-      Map<String, String>? queryString}) async {
+  Future<T> get<T>({required String url, Json? headers, Json? params, Json? queryString}) async {
     final response = await client.get(
         _buildUri(url: url, params: params, queryString: queryString),
         headers: _buildHeaders(url: url, headers: headers));
@@ -53,28 +49,21 @@ final class HttpAdapter implements HttpGetClient {
     }
   }
 
-  Map<String, String> _buildHeaders({
-    required String url,
-    Map<String, String>? headers,
-  }) {
-    return (headers ?? {})
-      ..addAll({'content-type': 'application/json', 'accept': 'application/json'});
+  Map<String, String> _buildHeaders({required String url, Json? headers}) {
+    final defaultHeaders = {'content-type': 'application/json', 'accept': 'application/json'};
+    return defaultHeaders
+      ..addAll({for (final key in (headers ?? {}).keys) key: headers![key].toString()});
   }
 
-  Uri _buildUri(
-      {required String url,
-      required Map<String, String?>? params,
-      Map<String, String>? queryString}) {
+  Uri _buildUri({required String url, Json? params, Json? queryString}) {
     url = params?.keys
-            .fold(url, (result, key) => result.replaceFirst(':$key', params[key] ?? ''))
-            .removeSuffix('/') ??
-        url;
+            .fold(url, (result, key) => result.replaceFirst(':$key', params[key]?.toString() ?? ''))
+            .removeSuffix('/') ?? url;
     //: Foi utilizado a lib dartx a fim de remover um determinado caracter, caso este exista.
     //fold faz com que a cada interação, o valor que é retonado acumule no campo 'result' que é reusado a cada interação.
     url = queryString?.keys
             .fold('$url?', (result, key) => '$result$key=${queryString[key]}&')
-            .removeSuffix('&') ??
-        url;
+            .removeSuffix('&') ?? url;
 
     return Uri.parse(url);
   }
