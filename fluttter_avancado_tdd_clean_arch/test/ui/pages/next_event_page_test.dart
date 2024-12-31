@@ -10,10 +10,14 @@ import '../../helpers/fakes.dart';
 final class NextEventViewModel {
   final List<NextEventPlayerViewModel> goalkeepers;
   final List<NextEventPlayerViewModel> players;
+  final List<NextEventPlayerViewModel> out;
+  final List<NextEventPlayerViewModel> doubt;
 
   const NextEventViewModel({
     this.goalkeepers = const [],
-    this.players = const []
+    this.players = const [],
+    this.out = const [],
+    this.doubt = const [],
   });
 }
 
@@ -57,6 +61,8 @@ class _NextEventPageState extends State<NextEventPage> {
               children: [
                 if (viewModel.goalkeepers.isNotEmpty) ListSection(title: 'DENTRO - GOLEIROS', items: viewModel.goalkeepers),
                 if (viewModel.players.isNotEmpty) ListSection(title: 'DENTRO - JOGADORES', items: viewModel.players),
+                if (viewModel.out.isNotEmpty) ListSection(title: 'FORA', items: viewModel.out),
+                if (viewModel.doubt.isNotEmpty) ListSection(title: 'DÚVIDA', items: viewModel.doubt),
               ],
             );
           }),
@@ -123,8 +129,15 @@ para facilitar a minha vida, mas a minha camanda de UI não precisa saber disso,
   void emitNextEventWith({
     List<NextEventPlayerViewModel> goalkeepers = const [],
     List<NextEventPlayerViewModel> players = const [],
+    List<NextEventPlayerViewModel> out = const [],
+    List<NextEventPlayerViewModel> doubt = const [],
   }) {
-    nextEventSubject.add(NextEventViewModel(goalkeepers: goalkeepers, players: players));
+    nextEventSubject.add(NextEventViewModel(
+      goalkeepers: goalkeepers,
+      players: players,
+      out: out,
+      doubt: doubt,
+    ));
   }
 
   void emitError() {
@@ -197,13 +210,7 @@ void main() {
     expect(find.text('Pedro'), findsOneWidget);
   });
   //
-  testWidgets('should hide all sections', (tester) async {
-    await tester.pumpWidget(sut);
-    presenter.emitNextEvent();
-    await tester.pump();
-    expect(find.text('DENTRO - GOLEIROS'), findsNothing);
-    expect(find.text('DENTRO - PLAYERS'), findsNothing);
-  });
+
   testWidgets('should present players section', (tester) async {
     await tester.pumpWidget(sut);
     presenter.emitNextEventWith(players: const [
@@ -217,5 +224,44 @@ void main() {
     expect(find.text('Rodrigo'), findsOneWidget);
     expect(find.text('Rafael'), findsOneWidget);
     expect(find.text('Pedro'), findsOneWidget);
+  });
+
+  testWidgets('should present out section', (tester) async {
+    await tester.pumpWidget(sut);
+    presenter.emitNextEventWith(out: const [
+      NextEventPlayerViewModel(name: 'Rodrigo'),
+      NextEventPlayerViewModel(name: 'Rafael'),
+      NextEventPlayerViewModel(name: 'Pedro'),
+    ]);
+    await tester.pump();
+    expect(find.text('FORA'), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
+    expect(find.text('Rodrigo'), findsOneWidget);
+    expect(find.text('Rafael'), findsOneWidget);
+    expect(find.text('Pedro'), findsOneWidget);
+  });
+  testWidgets('should present doubt section', (tester) async {
+    await tester.pumpWidget(sut);
+    presenter.emitNextEventWith(doubt: const [
+      NextEventPlayerViewModel(name: 'Rodrigo'),
+      NextEventPlayerViewModel(name: 'Rafael'),
+      NextEventPlayerViewModel(name: 'Pedro'),
+    ]);
+    await tester.pump();
+    expect(find.text('DÚVIDA'), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
+    expect(find.text('Rodrigo'), findsOneWidget);
+    expect(find.text('Rafael'), findsOneWidget);
+    expect(find.text('Pedro'), findsOneWidget);
+  });
+
+   testWidgets('should hide all sections', (tester) async {
+    await tester.pumpWidget(sut);
+    presenter.emitNextEvent();
+    await tester.pump();
+    expect(find.text('DENTRO - GOLEIROS'), findsNothing);
+    expect(find.text('DENTRO - PLAYERS'), findsNothing);
+    expect(find.text('FORA'), findsNothing);
+    expect(find.text('DÚVIDA'), findsNothing);
   });
 }
