@@ -9,9 +9,11 @@ import '../../helpers/fakes.dart';
 //A viewModel deve conter somente as informações que são exigidas na view
 final class NextEventViewModel {
   final List<NextEventPlayerViewModel> goalkeepers;
+  final List<NextEventPlayerViewModel> players;
 
   const NextEventViewModel({
     this.goalkeepers = const [],
+    this.players = const []
   });
 }
 
@@ -53,7 +55,8 @@ class _NextEventPageState extends State<NextEventPage> {
             final viewModel = snapshot.data!;
             return ListView(
               children: [
-                if (viewModel.goalkeepers.isNotEmpty) ListSection(title: 'DENTRO - GOLEIROS', items: viewModel.goalkeepers)
+                if (viewModel.goalkeepers.isNotEmpty) ListSection(title: 'DENTRO - GOLEIROS', items: viewModel.goalkeepers),
+                if (viewModel.players.isNotEmpty) ListSection(title: 'DENTRO - JOGADORES', items: viewModel.players),
               ],
             );
           }),
@@ -74,8 +77,8 @@ final class ListSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text('DENTRO - GOLEIROS'),
         Text(title),
+        Text(items.length.toString()),
         ...items.map((player) => Text(
               player.name,
             ))
@@ -117,8 +120,11 @@ para facilitar a minha vida, mas a minha camanda de UI não precisa saber disso,
     //Se viewModel for nulo, será emitido uma lista vazia
     nextEventSubject.add(viewModel ?? const NextEventViewModel());
   }
-  void emitNextEventWith({List<NextEventPlayerViewModel> goalkeepers = const[]}) {
-    nextEventSubject.add(NextEventViewModel(goalkeepers: goalkeepers));
+  void emitNextEventWith({
+    List<NextEventPlayerViewModel> goalkeepers = const [],
+    List<NextEventPlayerViewModel> players = const [],
+  }) {
+    nextEventSubject.add(NextEventViewModel(goalkeepers: goalkeepers, players: players));
   }
 
   void emitError() {
@@ -196,5 +202,20 @@ void main() {
     presenter.emitNextEvent();
     await tester.pump();
     expect(find.text('DENTRO - GOLEIROS'), findsNothing);
+    expect(find.text('DENTRO - PLAYERS'), findsNothing);
+  });
+  testWidgets('should present players section', (tester) async {
+    await tester.pumpWidget(sut);
+    presenter.emitNextEventWith(players: const [
+      NextEventPlayerViewModel(name: 'Rodrigo'),
+      NextEventPlayerViewModel(name: 'Rafael'),
+      NextEventPlayerViewModel(name: 'Pedro'),
+    ]);
+    await tester.pump();
+    expect(find.text('DENTRO - JOGADORES'), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
+    expect(find.text('Rodrigo'), findsOneWidget);
+    expect(find.text('Rafael'), findsOneWidget);
+    expect(find.text('Pedro'), findsOneWidget);
   });
 }
