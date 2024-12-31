@@ -50,17 +50,39 @@ class _NextEventPageState extends State<NextEventPage> {
             //Enquanto não estiver chegando os dados, o CircularProgressIndicator ficará disponível
             if (snapshot.connectionState != ConnectionState.active) return const CircularProgressIndicator();
             if (snapshot.hasError) return const SizedBox.shrink();
+            final viewModel = snapshot.data!;
             return ListView(
               children: [
-                const Text('DENTRO - GOLEIROS'),
-                Text(snapshot.data!.goalkeepers.length.toString()),
-                //Spread Operator (…) is used for inserting multiple elements in a collection like Lists, Maps, etc.
-                ...snapshot.data!.goalkeepers.map((player) => Text(player.name))
+                if (viewModel.goalkeepers.isNotEmpty) ListSection(title: 'DENTRO - GOLEIROS', items: viewModel.goalkeepers)
               ],
             );
           }),
     );
   }
+}
+
+final class ListSection extends StatelessWidget {
+  final String title;
+  final List<NextEventPlayerViewModel> items;
+  const ListSection({
+    required this.title,
+    required this.items,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text('DENTRO - GOLEIROS'),
+        Text(title),
+        ...items.map((player) => Text(
+              player.name,
+            ))
+      ],
+    );
+  }
+
 }
 
 //: A ideia é que o presenter faça também todo a lógica de ordenação dos dados, tirando qualquer lógica da UI
@@ -167,5 +189,12 @@ void main() {
     expect(find.text('Rodrigo'), findsOneWidget);
     expect(find.text('Rafael'), findsOneWidget);
     expect(find.text('Pedro'), findsOneWidget);
+  });
+  //
+  testWidgets('should hide all sections', (tester) async {
+    await tester.pumpWidget(sut);
+    presenter.emitNextEvent();
+    await tester.pump();
+    expect(find.text('DENTRO - GOLEIROS'), findsNothing);
   });
 }
