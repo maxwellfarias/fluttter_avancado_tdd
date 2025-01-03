@@ -3,81 +3,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/presentation/presenters/next_event_presenter.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/ui/pages/next_event_page.dart';
 import 'package:rxdart/subjects.dart';
 
 import '../../helpers/fakes.dart';
 
-//A viewModel deve conter somente as informações que são exigidas na view
-
-
-final class NextEventPage extends StatefulWidget {
-  final NextEventPresenter presenter;
-  final String groupId;
-  const NextEventPage(
-      {required this.presenter, super.key, required this.groupId});
-
-  @override
-  State<NextEventPage> createState() => _NextEventPageState();
-}
-
-class _NextEventPageState extends State<NextEventPage> {
-  @override
-  void initState() {
-    widget.presenter.loadNextEvent(groupId: widget.groupId);
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<NextEventViewModel>(
-          stream: widget.presenter.nextEventStream,
-          //Toda vez que a stream receber dados, esses dados ficarão disponíveis no snapshot
-          builder: (context, snapshot) {
-            //Enquanto não estiver chegando os dados, o CircularProgressIndicator ficará disponível
-            if (snapshot.connectionState != ConnectionState.active) return const CircularProgressIndicator();
-            if (snapshot.hasError) return const SizedBox.shrink();
-            final viewModel = snapshot.data!;
-            return ListView(
-              children: [
-                if (viewModel.goalkeepers.isNotEmpty) ListSection(title: 'DENTRO - GOLEIROS', items: viewModel.goalkeepers),
-                if (viewModel.players.isNotEmpty) ListSection(title: 'DENTRO - JOGADORES', items: viewModel.players),
-                if (viewModel.out.isNotEmpty) ListSection(title: 'FORA', items: viewModel.out),
-                if (viewModel.doubt.isNotEmpty) ListSection(title: 'DÚVIDA', items: viewModel.doubt),
-              ],
-            );
-          }),
-    );
-  }
-}
-
-final class ListSection extends StatelessWidget {
-  final String title;
-  final List<NextEventPlayerViewModel> items;
-  const ListSection({
-    required this.title,
-    required this.items,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(title),
-        Text(items.length.toString()),
-        ...items.map((player) => Text(
-              player.name,
-            ))
-      ],
-    );
-  }
-
-}
+//:ORGANIZAÇÃO DOS ARQUIVOS DE UI
+//O professor costumava criar uma pasta para cada tela e dentro dessa pasta colocar o arquivo principal da tela junto com uma pasta com
+//os componentes dessa tela, mas posteriormente ele adotou o padrão de colocar tudo no mesmo arquivo reduzindo o apontamento. Aparentemente
+//é mais uma questão de gosto pessoal.
 
 //: A ideia é que o presenter faça também todo a lógica de ordenação dos dados, tirando qualquer lógica da UI
-
-
 final class NextEventPresenterSpy implements NextEventPresenter {
   int loadCallsCount = 0;
   String? groupId;
