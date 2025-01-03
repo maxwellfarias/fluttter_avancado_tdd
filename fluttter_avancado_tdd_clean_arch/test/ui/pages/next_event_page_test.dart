@@ -2,32 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/presentation/presenters/next_event_presenter.dart';
 import 'package:rxdart/subjects.dart';
 
 import '../../helpers/fakes.dart';
 
 //A viewModel deve conter somente as informações que são exigidas na view
-final class NextEventViewModel {
-  final List<NextEventPlayerViewModel> goalkeepers;
-  final List<NextEventPlayerViewModel> players;
-  final List<NextEventPlayerViewModel> out;
-  final List<NextEventPlayerViewModel> doubt;
 
-  const NextEventViewModel({
-    this.goalkeepers = const [],
-    this.players = const [],
-    this.out = const [],
-    this.doubt = const [],
-  });
-}
-
-final class NextEventPlayerViewModel {
-  final String name;
-
-  const NextEventPlayerViewModel({
-    required this.name,
-  });
-}
 
 final class NextEventPage extends StatefulWidget {
   final NextEventPresenter presenter;
@@ -95,10 +76,7 @@ final class ListSection extends StatelessWidget {
 }
 
 //: A ideia é que o presenter faça também todo a lógica de ordenação dos dados, tirando qualquer lógica da UI
-abstract interface class NextEventPresenter {
-  Stream<NextEventViewModel> get nextEventStream;
-  void loadNextEvent({required String groupId});
-}
+
 
 final class NextEventPresenterSpy implements NextEventPresenter {
   int loadCallsCount = 0;
@@ -114,7 +92,7 @@ final class NextEventPresenterSpy implements NextEventPresenter {
 /*
 Por que não trabalhar com BLOC?
 Eu pessolamente não gosto de trabalhar com lib onde não há a opção de obter a stream de dentro do componente que a lib está usando para gerenciar a sua stream. Libs que não te fornecem esse
-acesso, assim como o Bloc, não dão a opção de extrair a atream do componente que ele gerencia, ele irá forçar que você use um componente dele na camada de UI para fazer esse refresh automático. Isso é bem ruim porque faz com que haja uma aclopamento de duas camadas para fazer o gerenciamento
+acesso, assim como o Bloc, não dão a opção de extrair a stream do componente que ele gerencia, ele irá forçar que você use um componente dele na camada de UI para fazer esse refresh automático. Isso é bem ruim porque faz com que haja uma aclopamento de duas camadas para fazer o gerenciamento
 de estados e se precisar mudar no futuro, pode dar um trabalho imenso. Por isso eu prefiro sempre usar libs que dão a possibilidade de se trabalhar com streams. Será usado o BehaviorSubject
 para facilitar a minha vida, mas a minha camanda de UI não precisa saber disso, porque é independente de biblioteca.
  */
