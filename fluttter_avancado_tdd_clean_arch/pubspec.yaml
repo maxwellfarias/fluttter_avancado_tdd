@@ -13,6 +13,7 @@ dependencies:
   http: ^1.2.2
   dartx: ^1.2.0
   rxdart: ^0.28.0
+  network_image_mock: ^2.1.1
 
 dev_dependencies:
   flutter_test:
