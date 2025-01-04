@@ -18,7 +18,6 @@ import '../../helpers/fakes.dart';
 //: A ideia é que o presenter faça também todo a lógica de ordenação dos dados, tirando qualquer lógica da UI
 final class NextEventPresenterSpy implements NextEventPresenter {
   int loadCallsCount = 0;
-  int reloadCallsCount = 0;
   bool isReload = false;
   String? groupId;
 
@@ -75,11 +74,6 @@ para facilitar a minha vida, mas a minha camanda de UI não precisa saber disso,
     loadCallsCount++;
     this.groupId = groupId;
     this.isReload = isReload;
-  }
-  @override
-  void reloadNextEvent({required String groupId}) {
-    reloadCallsCount++;
-    this.groupId = groupId;
   }
 }
 
@@ -228,11 +222,15 @@ void main() {
 
   testWidgets('should load event data on reload click', (tester) async {
     await tester.pumpWidget(sut);
+    expect(presenter.loadCallsCount, 1);
+    expect(presenter.groupId, groupId);
+    expect(presenter.isReload, false);
     presenter.emitError();
     await tester.pump();
     await tester.tap(find.text('Recarregar'));
-    expect(presenter.reloadCallsCount, 1);
+    expect(presenter.loadCallsCount, 2);
     expect(presenter.groupId, groupId);
+    expect(presenter.isReload, true);
   });
 
   testWidgets('should handle spinner on page busy event', (tester) async {
@@ -248,13 +246,18 @@ void main() {
   });
   testWidgets('should laod event data on pull to refresh', (tester) async {
     await tester.pumpWidget(sut);
+    expect(presenter.loadCallsCount, 1);
+    expect(presenter.groupId, groupId);
+    expect(presenter.isReload, false);
     presenter.emitNextEvent();
     await tester.pump();
     //flingFrom simula arrastar a tela de cima para baixo a fim de fazer o refresh
     await tester.flingFrom(const Offset(50, 100), const Offset(0, 400), 800);
     //pumpAndSettle executa o pump até acabar todas as animaçōes que tem na tela, isso se faz necessário devido a animação oriunda do carregamento anterior
     await tester.pumpAndSettle();
-    expect(presenter.reloadCallsCount, 1);
+    await tester.pumpWidget(sut);
+    expect(presenter.loadCallsCount, 2);
     expect(presenter.groupId, groupId);
+    expect(presenter.isReload, true);
   });
 }
