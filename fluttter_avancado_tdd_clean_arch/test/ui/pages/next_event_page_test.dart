@@ -246,4 +246,15 @@ void main() {
     await tester.pump();
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });
+  testWidgets('should laod event data on pull to refresh', (tester) async {
+    await tester.pumpWidget(sut);
+    presenter.emitNextEvent();
+    await tester.pump();
+    //flingFrom simula arrastar a tela de cima para baixo a fim de fazer o refresh
+    await tester.flingFrom(const Offset(50, 100), const Offset(0, 400), 800);
+    //pumpAndSettle executa o pump até acabar todas as animaçōes que tem na tela, isso se faz necessário devido a animação oriunda do carregamento anterior
+    await tester.pumpAndSettle();
+    expect(presenter.reloadCallsCount, 1);
+    expect(presenter.groupId, groupId);
+  });
 }
