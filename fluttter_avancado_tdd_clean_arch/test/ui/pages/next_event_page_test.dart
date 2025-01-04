@@ -1,7 +1,4 @@
 // ignore_for_file: prefer_const_constructors
-
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/presentation/presenters/next_event_presenter.dart';
@@ -22,6 +19,7 @@ import '../../helpers/fakes.dart';
 final class NextEventPresenterSpy implements NextEventPresenter {
   int loadCallsCount = 0;
   int reloadCallsCount = 0;
+  bool isReload = false;
   String? groupId;
 
   //Poderia ter sido criado uma StreamController a fim de controlar a stream manualmente, mas o professor achou que não valeria a pena, pois há libs que facilitam trabalhar com streams de
@@ -73,9 +71,10 @@ para facilitar a minha vida, mas a minha camanda de UI não precisa saber disso,
   }
 
   @override
-  void loadNextEvent({required String groupId}) {
+  void loadNextEvent({required String groupId, bool isReload = false}) {
     loadCallsCount++;
     this.groupId = groupId;
+    this.isReload = isReload;
   }
   @override
   void reloadNextEvent({required String groupId}) {
@@ -101,6 +100,7 @@ void main() {
     await tester.pumpWidget(sut);
     expect(presenter.loadCallsCount, 1);
     expect(presenter.groupId, groupId);
+    expect(presenter.isReload, false);
   });
   testWidgets('should present spinner while data is loading', (tester) async {
     await tester.pumpWidget(sut);
