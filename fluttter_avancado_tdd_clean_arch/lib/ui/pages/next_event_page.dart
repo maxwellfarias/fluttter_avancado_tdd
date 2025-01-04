@@ -26,7 +26,10 @@ class _NextEventPageState extends State<NextEventPage> {
   Widget buildErrorLayout() => Column(
         children: [
           const Text('Algo errado aconteceu, tente novamente.'),
-          ElevatedButton(onPressed: () {}, child: const Text('Recarregar'))
+          ElevatedButton(
+            onPressed: () => widget.presenter.reloadNextEvent(groupId: widget.groupId),
+            child: const Text('Recarregar'),
+          )
         ],
       );
 
@@ -37,7 +40,9 @@ class _NextEventPageState extends State<NextEventPage> {
           stream: widget.presenter.nextEventStream,
           //Toda vez que a stream receber dados, esses dados ficarão disponíveis no snapshot
           builder: (context, snapshot) {
-            //Enquanto não estiver chegando os dados, o CircularProgressIndicator ficará disponível
+            //Enquanto não estiver chegando os dados, o CircularProgressIndicator ficará disponível. Depois que o stream recebe um dado pela primeira vez, o estado da conexão
+            //permanece ativo fazendo com que caso seja feita uma nova chamada, o CircularProgressIndicator não será exibido naturalmente. Se fosse forçar o ConnectionState
+            //para um estado que ativasse o CircularProgressIndicator, isso iria deixar a tela com um efeito estranho com uma transição que pisca.
             if (snapshot.connectionState != ConnectionState.active) return const CircularProgressIndicator();
             if (snapshot.hasError) return buildErrorLayout();
             final viewModel = snapshot.data!;

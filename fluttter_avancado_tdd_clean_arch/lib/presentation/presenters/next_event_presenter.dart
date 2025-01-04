@@ -1,6 +1,7 @@
 abstract interface class NextEventPresenter {
   Stream<NextEventViewModel> get nextEventStream;
   void loadNextEvent({required String groupId});
+   void reloadNextEvent({required String groupId});
 }
 //:Poderia dentro do presentation layer criar uma pasta chamada 'viewModel. O professor não vê como um problema em si, mas seria desnecessário
 //uma vez que quando se coloca um arquivo dentro de pastas, a ideia seria reutilizar esse arquivo em outros locais do projeto, mas quando se
