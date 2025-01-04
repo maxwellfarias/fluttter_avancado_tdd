@@ -23,6 +23,13 @@ class _NextEventPageState extends State<NextEventPage> {
     super.initState();
   }
 
+  Widget buildErrorLayout() => Column(
+        children: [
+          const Text('Algo errado aconteceu, tente novamente.'),
+          ElevatedButton(onPressed: () {}, child: const Text('Recarregar'))
+        ],
+      );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,9 +38,8 @@ class _NextEventPageState extends State<NextEventPage> {
           //Toda vez que a stream receber dados, esses dados ficarão disponíveis no snapshot
           builder: (context, snapshot) {
             //Enquanto não estiver chegando os dados, o CircularProgressIndicator ficará disponível
-            if (snapshot.connectionState != ConnectionState.active)
-              return const CircularProgressIndicator();
-            if (snapshot.hasError) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.active) return const CircularProgressIndicator();
+            if (snapshot.hasError) return buildErrorLayout();
             final viewModel = snapshot.data!;
             return ListView(
               children: [
@@ -71,7 +77,10 @@ final class ListSection extends StatelessWidget {
         Text(items.length.toString()),
         ...items.map((player) => Row(
               children: [
-                PlayerPhoto(initials: player.initials, photo: player.photo,),
+                PlayerPhoto(
+                  initials: player.initials,
+                  photo: player.photo,
+                ),
                 Text(player.name),
                 PlayerPosition(position: player.position),
                 PlayerStatus(isConfirmed: player.isConfirmed),

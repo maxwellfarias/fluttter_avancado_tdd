@@ -195,4 +195,18 @@ void main() {
     expect(find.byType(PlayerStatus), findsNothing);
     expect(find.byType(PlayerPhoto), findsNothing);
   });
+   testWidgets('should present message on load error', (tester) async {
+    await tester.pumpWidget(sut);
+    presenter.emitError();
+    await tester.pump();
+    expect(find.text('DENTRO - GOLEIROS'), findsNothing);
+    expect(find.text('DENTRO - PLAYERS'), findsNothing);
+    expect(find.text('FORA'), findsNothing);
+    expect(find.text('DÚVIDA'), findsNothing);
+    expect(find.byType(PlayerPosition), findsNothing);
+    expect(find.byType(PlayerStatus), findsNothing);
+    expect(find.byType(PlayerPhoto), findsNothing);
+    expect(find.text('Algo errado aconteceu, tente novamente.'), findsOneWidget);
+    expect(find.text('Recarregar'), findsOneWidget);
+  });
 }
