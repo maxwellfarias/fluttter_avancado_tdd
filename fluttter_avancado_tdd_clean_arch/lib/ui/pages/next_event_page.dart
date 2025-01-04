@@ -20,8 +20,18 @@ class _NextEventPageState extends State<NextEventPage> {
   @override
   void initState() {
     widget.presenter.loadNextEvent(groupId: widget.groupId);
+    //:O listener permanece ativo porque é gerenciado pela StreamSubscription, que não depende diretamente do ciclo de vida do widget. Enquanto você não cancela
+    //manualmente a StreamSubscription (chamando .cancel()), ela continua ativa. Para evitar problemas de vazamento, cancele o listener no método dispose.
+    widget.presenter.isBusyStream.listen((isBusy)=> isBusy ? showLoading() : hideLoading());
     super.initState();
   }
+
+  void showLoading() => showDialog(
+        context: context,
+        builder: (context) => const CircularProgressIndicator(),
+      );
+//maybePop realizar o pop quando for possivel
+  void hideLoading() => Navigator.of(context).maybePop();
 
   Widget buildErrorLayout() => Column(
         children: [

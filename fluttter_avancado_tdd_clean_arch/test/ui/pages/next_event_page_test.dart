@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/presentation/presenters/next_event_presenter.dart';
@@ -28,6 +30,7 @@ final class NextEventPresenterSpy implements NextEventPresenter {
   //Geralmente numa stream é especificado o tipo de dados [Stream<type>] que se deseja, mas como não estamos testando o tipo de dados, não será especificado e o dart infere como dynamic. Esse getter
 //irá expor a stream.
   var nextEventSubject = BehaviorSubject<NextEventViewModel>();
+  var isBusySubject = BehaviorSubject<bool>();
 
 /*
 Por que não trabalhar com BLOC?
@@ -38,6 +41,9 @@ para facilitar a minha vida, mas a minha camanda de UI não precisa saber disso,
  */
   @override
   Stream<NextEventViewModel> get nextEventStream => nextEventSubject.stream;
+
+  @override
+  Stream<bool> get isBusyStream => isBusySubject.stream;
 
 //Está função alimenta uma stream de dados nextEventSubject. Foi criado um get nextEventStream a fim de ter acesso a essa stream a assim alimentar a minha camada de UI.
   void emitNextEvent([NextEventViewModel? viewModel]) {
@@ -60,6 +66,10 @@ para facilitar a minha vida, mas a minha camanda de UI não precisa saber disso,
 
   void emitError() {
     nextEventSubject.addError(Error());
+  }
+
+  void emitIsBusy([bool isBusy = true]) {
+    isBusySubject.add(isBusy);
   }
 
   @override
@@ -223,5 +233,17 @@ void main() {
     await tester.tap(find.text('Recarregar'));
     expect(presenter.reloadCallsCount, 1);
     expect(presenter.groupId, groupId);
+  });
+
+  testWidgets('should handle spinner on page busy event', (tester) async {
+    await tester.pumpWidget(sut);
+    presenter.emitError();
+    await tester.pump();
+    presenter.emitIsBusy(true);
+    await tester.pump();
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    presenter.emitIsBusy(false);
+    await tester.pump();
+    expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 }
