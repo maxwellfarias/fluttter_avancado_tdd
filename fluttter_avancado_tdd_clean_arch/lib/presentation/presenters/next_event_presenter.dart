@@ -24,12 +24,16 @@ final class NextEventViewModel {
 
 final class NextEventPlayerViewModel {
   final String name;
+  final String initials;
+  final String? photo;
   final String? position;
   final bool? isConfirmed;
 
   const NextEventPlayerViewModel({
     required this.name,
-     this.position,
-     this.isConfirmed,
+    required this.initials,
+    this.photo,
+    this.position,
+    this.isConfirmed,
   });
 }
