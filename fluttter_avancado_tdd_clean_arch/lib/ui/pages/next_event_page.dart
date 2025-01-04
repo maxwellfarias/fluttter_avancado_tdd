@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/presentation/presenters/next_event_presenter.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/ui/components/player_position.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/ui/components/player_status.dart';
 
 final class NextEventPage extends StatefulWidget {
   final NextEventPresenter presenter;
@@ -70,7 +71,8 @@ final class ListSection extends StatelessWidget {
         ...items.map((player) => Row(
               children: [
                 Text(player.name),
-                PlayerPosition(position: player.position)
+                PlayerPosition(position: player.position),
+                PlayerStatus(isConfirmed: player.isConfirmed)
               ],
             ))
       ],

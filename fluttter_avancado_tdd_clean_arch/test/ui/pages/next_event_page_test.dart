@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/presentation/presenters/next_event_presenter.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/ui/components/player_position.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/ui/components/player_status.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/ui/pages/next_event_page.dart';
 import 'package:rxdart/subjects.dart';
 
@@ -124,6 +125,7 @@ void main() {
     expect(find.text('Rafael'), findsOneWidget);
     expect(find.text('Pedro'), findsOneWidget);
     expect(find.byType(PlayerPosition), findsExactly(3));
+    expect(find.byType(PlayerStatus), findsExactly(3));
   });
   //
 
@@ -141,6 +143,7 @@ void main() {
     expect(find.text('Rafael'), findsOneWidget);
     expect(find.text('Pedro'), findsOneWidget);
     expect(find.byType(PlayerPosition), findsExactly(3));
+    expect(find.byType(PlayerStatus), findsExactly(3));
   });
 
   testWidgets('should present out section', (tester) async {
@@ -157,6 +160,7 @@ void main() {
     expect(find.text('Rafael'), findsOneWidget);
     expect(find.text('Pedro'), findsOneWidget);
     expect(find.byType(PlayerPosition), findsExactly(3));
+    expect(find.byType(PlayerStatus), findsExactly(3));
   });
   testWidgets('should present doubt section', (tester) async {
     await tester.pumpWidget(sut);
@@ -183,5 +187,6 @@ void main() {
     expect(find.text('FORA'), findsNothing);
     expect(find.text('DÚVIDA'), findsNothing);
     expect(find.byType(PlayerPosition), findsNothing);
+    expect(find.byType(PlayerStatus), findsNothing);
   });
 }
