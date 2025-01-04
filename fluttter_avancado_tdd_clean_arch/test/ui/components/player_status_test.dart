@@ -7,10 +7,10 @@ final class PlayerStatus extends StatelessWidget {
   Color getColor() => switch(isConfirmed) {
     true => Colors.teal,
     false => Colors.pink,
-    _ => Colors.grey
+    null => Colors.blueGrey
   };
 
-  const PlayerStatus({super.key, required this.isConfirmed});
+  const PlayerStatus({super.key, this.isConfirmed});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,5 +36,13 @@ void main() {
         .firstWidget<Container>(find.byType(Container))
         .decoration as BoxDecoration;
     expect(decoration.color, Colors.pink);
+  });
+
+  testWidgets('should present grey status', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: PlayerStatus()));
+    final decoration = tester
+        .firstWidget<Container>(find.byType(Container))
+        .decoration as BoxDecoration;
+    expect(decoration.color, Colors.blueGrey);
   });
 }
