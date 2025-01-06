@@ -27,10 +27,18 @@ final class NextEventLoaderSpy {
 }
 
 void main(){
+    late NextEventLoaderSpy nextEventLoader;
+    late String groupId;
+    late NextEventRxPresenter sut;
+
+    setUp((){
+        nextEventLoader = NextEventLoaderSpy();
+        groupId = anyString();
+        sut = NextEventRxPresenter(nextEventLoader: nextEventLoader.call);
+    });
+
+
 test('should get event data', () async {
-    final nextEventLoader = NextEventLoaderSpy();
-    final groupId = anyString();
-    final sut = NextEventRxPresenter(nextEventLoader: nextEventLoader.call);
     await sut.loadNextEvent(groupId: groupId);
     expect(nextEventLoader.callCount, 1);
     expect(nextEventLoader.groupId, groupId);
