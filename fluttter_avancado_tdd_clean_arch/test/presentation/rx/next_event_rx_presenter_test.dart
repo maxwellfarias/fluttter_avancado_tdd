@@ -42,6 +42,11 @@ NextEventRxPresenter({required this.nextEventLoader});
           .where((player) => player.confirmationDate == null)
           .sortedBy((player) => player.name)
           .map(_mapPlayer)
+          .toList(),
+      out: event.players
+          .where((player) => player.confirmationDate != null && player.isConfirmed == false)
+          .sortedBy((player) => player.confirmationDate!)
+          .map(_mapPlayer)
           .toList()
   );
 
@@ -158,6 +163,23 @@ test('should emit correct events on load with error', () async {
         expect(event.doubt[0].photo, player.photo);
         expect(event.doubt[0].position, player.position);
 
+    });
+    await sut.loadNextEvent(groupId: groupId);
+  });
+
+  test('should build out list sorted by confirmation date', () async {
+    nextEventLoader.simulatePlayers ([
+        NextEventPlayer(id: anyString(), name: 'D', isConfirmed: false, confirmationDate: DateTime(2025, 1, 1, 10)),
+        NextEventPlayer(id: anyString(), name: 'C', isConfirmed: anyBool()),
+        NextEventPlayer(id: anyString(), name: 'E', isConfirmed: true, confirmationDate: DateTime(2025, 1, 1, 11)),
+        NextEventPlayer(id: anyString(), name: 'A', isConfirmed: false, confirmationDate: DateTime(2025, 1, 1, 11)),
+        NextEventPlayer(id: anyString(), name: 'B', isConfirmed: false, confirmationDate: DateTime(2025, 1, 1, 9))
+    ]);
+    sut.nextEventStream.listen((event){
+        expect(event.out.length, 3);
+        expect(event.out[0].name, 'B');
+        expect(event.out[1].name, 'D');
+        expect(event.out[2].name, 'A');
     });
     await sut.loadNextEvent(groupId: groupId);
   });
