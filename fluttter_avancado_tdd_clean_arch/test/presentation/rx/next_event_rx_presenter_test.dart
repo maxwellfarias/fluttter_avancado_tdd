@@ -28,6 +28,7 @@ NextEventRxPresenter({required this.nextEventLoader});
       await nextEventLoader(groupId: groupId);
     } catch (error) {
       nextEventSubject.addError(error);
+    } finally {
       if (isReload) isBusySubject.add(false);
     }
   }
@@ -91,5 +92,10 @@ test('should emit correct events on load with error', () async {
     //neverCalled Returns a function that causes the test to fail if it's called.
     sut.isBusyStream.listen(neverCalled);
     await sut.loadNextEvent(groupId: groupId);
+  });
+
+  test('should emit correct events on reload with success', () async {
+    expectLater(sut.isBusyStream, emitsInOrder([true, false]));
+    await sut.loadNextEvent(groupId: groupId, isReload: true);
   });
 }
