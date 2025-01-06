@@ -56,6 +56,7 @@ NextEventRxPresenter({required this.nextEventLoader});
         initials: player.initials,
         photo: player.photo,
         position: player.position,
+        isConfirmed: player.confirmationDate == null ? null : false,
       );
 }
 
@@ -162,7 +163,6 @@ test('should emit correct events on load with error', () async {
         expect(event.doubt[0].isConfirmed, null);
         expect(event.doubt[0].photo, player.photo);
         expect(event.doubt[0].position, player.position);
-
     });
     await sut.loadNextEvent(groupId: groupId);
   });
@@ -180,6 +180,19 @@ test('should emit correct events on load with error', () async {
         expect(event.out[0].name, 'B');
         expect(event.out[1].name, 'D');
         expect(event.out[2].name, 'A');
+    });
+    await sut.loadNextEvent(groupId: groupId);
+  });
+
+  test('should map out player', () async {
+    final player = NextEventPlayer(id: anyString(), name: anyString(), isConfirmed: false, photo: anyString(), position: anyString(), confirmationDate: anyDate());
+    nextEventLoader.simulatePlayers ([player]);
+    sut.nextEventStream.listen((event){
+        expect(event.out[0].name, player.name);
+        expect(event.out[0].initials, player.initials);
+        expect(event.out[0].isConfirmed, player.isConfirmed);
+        expect(event.out[0].photo, player.photo);
+        expect(event.out[0].position, player.position);
     });
     await sut.loadNextEvent(groupId: groupId);
   });
