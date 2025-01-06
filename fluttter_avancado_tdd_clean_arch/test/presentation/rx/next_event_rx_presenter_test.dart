@@ -24,11 +24,11 @@ NextEventRxPresenter({required this.nextEventLoader});
 
   Future<void> loadNextEvent({required String groupId, bool isReload = false}) async {
     try {
-      isBusySubject.add(true);
+      if (isReload) isBusySubject.add(true);
       await nextEventLoader(groupId: groupId);
     } catch (error) {
       nextEventSubject.addError(error);
-      isBusySubject.add(false);
+      if (isReload) isBusySubject.add(false);
     }
   }
 }
@@ -79,9 +79,17 @@ test('should emit correct events on reload with error', () async {
     nextEventLoader.error = Error();
     //Adicionei o teste anterior que faz a mesma coisa que esse como pode ser feito da maneira tradicional de maneira menos verbosa (syntactic sugar).
     expectLater(sut.nextEventStream, emitsError(nextEventLoader.error));
-    expectLater(sut.isBusyStream, emits(true));
     //Garante que os valores emitidos estejam em uma determinada ordem
     expectLater(sut.isBusyStream, emitsInOrder([true, false]));
     await sut.loadNextEvent(groupId: groupId, isReload: true);
+  });
+
+test('should emit correct events on load with error', () async {
+    nextEventLoader.error = Error();
+    expectLater(sut.nextEventStream, emitsError(nextEventLoader.error));
+    //Ao colocar o neverCalled no listen, sera gerado uma falha no teste
+    //neverCalled Returns a function that causes the test to fail if it's called.
+    sut.isBusyStream.listen(neverCalled);
+    await sut.loadNextEvent(groupId: groupId);
   });
 }
