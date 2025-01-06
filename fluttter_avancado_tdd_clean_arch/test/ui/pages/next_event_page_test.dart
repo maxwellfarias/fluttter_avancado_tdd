@@ -70,7 +70,7 @@ para facilitar a minha vida, mas a minha camanda de UI não precisa saber disso,
   }
 
   @override
-  void loadNextEvent({required String groupId, bool isReload = false}) {
+  Future<void> loadNextEvent({required String groupId, bool isReload = false}) async {
     loadCallsCount++;
     this.groupId = groupId;
     this.isReload = isReload;
