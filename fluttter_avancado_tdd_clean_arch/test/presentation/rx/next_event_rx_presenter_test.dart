@@ -98,4 +98,9 @@ test('should emit correct events on load with error', () async {
     expectLater(sut.isBusyStream, emitsInOrder([true, false]));
     await sut.loadNextEvent(groupId: groupId, isReload: true);
   });
+
+  test('should emit correct events on load with success', () async {
+    sut.isBusyStream.listen(neverCalled);
+    await sut.loadNextEvent(groupId: groupId);
+  });
 }
