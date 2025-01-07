@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/errors.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/adapters/http_adapter.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 
 import '../../../mocks/fakes.dart';
 import '../mocks/client_spy.dart';
