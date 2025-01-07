@@ -53,6 +53,11 @@ NextEventRxPresenter({required this.nextEventLoader});
           .sortedBy((player) => player.confirmationDate!)
           .map(_mapPlayer)
           .toList(),
+          players: event.players
+          .where((player) => player.confirmationDate != null && player.isConfirmed == true && player.position != 'goalkeeper')
+          .sortedBy((player) => player.confirmationDate!)
+          .map(_mapPlayer)
+          .toList()
   );
 
   NextEventPlayerViewModel _mapPlayer(NextEventPlayer player) =>
@@ -61,7 +66,7 @@ NextEventRxPresenter({required this.nextEventLoader});
         initials: player.initials,
         photo: player.photo,
         position: player.position,
-        isConfirmed: player.confirmationDate == null ? null : false,
+        isConfirmed: player.confirmationDate == null ? null : player.isConfirmed,
       );
 }
 
@@ -215,6 +220,36 @@ test('should emit correct events on load with error', () async {
         expect(event.goalkeepers.length, 2);
         expect(event.goalkeepers[0].name, 'F');
         expect(event.goalkeepers[1].name, 'D');
+    });
+    await sut.loadNextEvent(groupId: groupId);
+  });
+
+  test('should map goalkeeper', () async {
+    final player = NextEventPlayer(id: anyString(), name: anyString(), isConfirmed: true, photo: anyString(), position: 'goalkeeper', confirmationDate: anyDate());
+    nextEventLoader.simulatePlayers ([player]);
+    sut.nextEventStream.listen((event){
+        expect(event.goalkeepers[0].name, player.name);
+        expect(event.goalkeepers[0].initials, player.initials);
+        expect(event.goalkeepers[0].isConfirmed, player.isConfirmed);
+        expect(event.goalkeepers[0].photo, player.photo);
+        expect(event.goalkeepers[0].position, player.position);
+    });
+    await sut.loadNextEvent(groupId: groupId);
+  });
+
+  test('should build players list sorted by confirmation date', () async {
+    nextEventLoader.simulatePlayers ([
+        NextEventPlayer(id: anyString(), name: 'D', isConfirmed: true, confirmationDate: DateTime(2025, 1, 1, 10), position: 'goalkeeper'),
+        NextEventPlayer(id: anyString(), name: 'C', isConfirmed: anyBool()),
+        NextEventPlayer(id: anyString(), name: 'E', isConfirmed: true, confirmationDate: DateTime(2025, 1, 1, 11), position: 'defender'),
+        NextEventPlayer(id: anyString(), name: 'A', isConfirmed: false, confirmationDate: DateTime(2025, 1, 1, 9)),
+        NextEventPlayer(id: anyString(), name: 'B', isConfirmed: true, confirmationDate: DateTime(2025, 1, 1, 12)),
+        NextEventPlayer(id: anyString(), name: 'F', isConfirmed: true, confirmationDate: DateTime(2025, 1, 1, 8), position: 'goalkeeper')
+    ]);
+    sut.nextEventStream.listen((event){
+        expect(event.players.length, 2);
+        expect(event.players[0].name, 'E');
+        expect(event.players[1].name, 'B');
     });
     await sut.loadNextEvent(groupId: groupId);
   });
