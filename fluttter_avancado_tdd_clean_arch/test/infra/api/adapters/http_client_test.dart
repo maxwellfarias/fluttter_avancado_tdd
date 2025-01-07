@@ -3,8 +3,8 @@ import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/errors.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/adapters/http_adapter.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 
-import '../../../helpers/fakes.dart';
-import '../clients/client_spy.dart';
+import '../../../mocks/fakes.dart';
+import '../mocks/client_spy.dart';
 
 //:Já existe uma classe em dart com esse nome, ela tambem faz requisicoes HTTP, contudo a propria documentacao dessa classe recomenda que seja usada a lib externa do HTTP
 //Devido a isso, é preciso ter cuidado com o import, para não usar a classe própria do dart. HttpClient é um adapter

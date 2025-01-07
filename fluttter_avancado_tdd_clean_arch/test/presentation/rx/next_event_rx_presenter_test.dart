@@ -9,7 +9,7 @@ import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_play
 import 'package:fluttter_avancado_tdd_clean_arch/presentation/presenters/next_event_presenter.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/presentation/rx/next_event_rx_presenter.dart';
 
-import '../../helpers/fakes.dart';
+import '../../mocks/fakes.dart';
 
 final class NextEventLoaderSpy {
     int callCount = 0;
