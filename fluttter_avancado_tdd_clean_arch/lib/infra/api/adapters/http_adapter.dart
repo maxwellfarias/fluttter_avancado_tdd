@@ -19,11 +19,11 @@ final class HttpAdapter implements HttpGetClient {
 //na prática, isso fere o YAGNI principle ("You Aren't Gonna Need It"), um vez que só deve ser implementado algo que de fato
 //será usado.
   @override
-  Future<T> get<T>({required String url, Json? headers, Json? params, Json? queryString}) async {
+  Future<dynamic> get({required String url, Json? headers, Json? params, Json? queryString}) async {
     final response = await client.get(
         _buildUri(url: url, params: params, queryString: queryString),
         headers: _buildHeaders(url: url, headers: headers));
-    return _handleResponse<T>(response);
+    return _handleResponse(response);
   }
 
   T _handleResponse<T>(Response response) {
@@ -37,10 +37,19 @@ final class HttpAdapter implements HttpGetClient {
           //porque em dart não é possível fazer casting de uma list da seguinte forma: List<B> as List<A>. Isso se dá devido à invariância em coleções.
           //O Dart tenta garantir que os elementos da lista sejam compatíveis. Isso falha, pois List<B> e List<A> são considerados tipos distintos, mesmo que B seja um subtipo de A.
           //Assim, é necessário fazer o casting de uma lista por meio de uma iteração de cada elemento e em seguida retornando uma lista.
-          final data = jsonDecode(response.body);
-          return (T == JsonArr)
-              ? data.map<Json>((e) => e as Json).toList()
-              : data;
+
+          /*
+            jsonDecode pode retornar os seguintes valores dependendo do Json fornecido:
+            Map<String, dynamic> → Para objetos JSON.
+            List<dynamic> → Para arrays JSON.
+            String → Para strings JSON.
+            num → Para números JSON (int ou double).
+            bool → Para valores booleanos JSON.
+            null → Para valores nulos JSON.
+
+
+           */
+          return jsonDecode(response.body);
         }
       case 401:
         throw SessionExpired();

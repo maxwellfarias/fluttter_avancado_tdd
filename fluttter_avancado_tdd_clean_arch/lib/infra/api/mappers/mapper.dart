@@ -1,7 +1,5 @@
-import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
-
 abstract base class Mapper<Entity> {
-  List<Entity> toList(JsonArr arr) => arr.map(toObject).toList();
+  List<Entity> toList(dynamic arr) => arr.map<Entity>(toObject).toList();
 
-  Entity toObject(Json json);
+  Entity toObject(dynamic json);
 }

@@ -3,7 +3,7 @@ import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 abstract interface class HttpGetClient {
   //O retorno tinha sido colocado como dinamico, porque ele pode ser um Map ou um array com varios Maps dentron dele. Posteriormente foi substituido por um tipo generico de modo que
   //quem chama o metodo, declara o tipo que espera ser retornado.
-  Future<T> get<T>({
+  Future<dynamic> get({
     required String url,
     Json? headers,
     Json? params,

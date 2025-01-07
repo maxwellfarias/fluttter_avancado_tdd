@@ -11,7 +11,7 @@ final class HttpGetClientSpy implements HttpGetClient {
   Error? error;
 
   @override
-  Future<T> get<T>(
+  Future get(
       {required String url,
       Json? headers,
       Json? params,

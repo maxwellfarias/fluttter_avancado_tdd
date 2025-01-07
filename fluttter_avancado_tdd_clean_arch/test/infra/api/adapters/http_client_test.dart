@@ -116,7 +116,7 @@ void main() {
     });
 
     test('should return a map', () async {
-      final data = await sut.get<Json>(url: url);
+      final data = await sut.get(url: url);
       expect(data['key1'], 'value1');
       expect(data['key2'], 'value2');
     });
@@ -129,7 +129,7 @@ void main() {
       "key": "value2"
     }]
     ''';
-      final JsonArr data = await sut.get<JsonArr>(url: url);
+      final data = await sut.get(url: url);
       expect(data[0]['key'], 'value1');
       expect(data[1]['key'], 'value2');
     });
