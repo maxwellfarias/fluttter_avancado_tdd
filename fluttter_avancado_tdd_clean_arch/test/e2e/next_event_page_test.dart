@@ -78,8 +78,26 @@ final httpClient = HttpAdapter(client: client);
     );
     await tester.pumpWidget(sut);
     await tester.pump();
+      /*
+    //:De maneira prática, apenas comparando o primeiro nome aparecendo na tela, já seria o suficiente que o teste e2e está funcionando, o último teste
+    não estava mais passando porque para encontrar o nome Claudio Gamarra seria necessário scrollar a tela a fim de encontrá-lo e é o que será feito
     expect(find.text('Cristiano Ronaldo'), findsOneWidget);
     expect(find.text('Lionel Messi'), findsOneWidget);
+    expect(find.text('Claudio Gamarra'), findsOneWidget);
+     */
+    
+    //ensureVisible faz o scroll para encontrar o elemento informado
+    await tester.ensureVisible(find.text('Cristiano Ronaldo', skipOffstage: false));
+    //atualiza a tela
+    await tester.pump();
+    expect(find.text('Cristiano Ronaldo'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('Lionel Messi', skipOffstage: false));
+    await tester.pump();
+    expect(find.text('Lionel Messi'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('Claudio Gamarra', skipOffstage: false));
+    await tester.pump();
     expect(find.text('Claudio Gamarra'), findsOneWidget);
   });
 }
