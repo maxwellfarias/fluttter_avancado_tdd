@@ -83,5 +83,3 @@ final httpClient = HttpAdapter(client: client);
     expect(find.text('Claudio Gamarra'), findsOneWidget);
   });
 }
-
-//Li
