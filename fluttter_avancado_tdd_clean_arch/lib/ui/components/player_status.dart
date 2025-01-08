@@ -13,9 +13,12 @@ final class PlayerStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 16,
-      width: 16,
-      decoration: BoxDecoration(shape: BoxShape.circle, color: getColor()),
+      height: 12,
+      width: 12,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: getColor(),
+      ),
     );
   }
 }
