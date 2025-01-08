@@ -1,7 +1,6 @@
 //TESTE DE INTEGRACAO
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/domain/usecases/next_event_loader.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/adapters/http_adapter.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/repositories/load_next_event_api_repo.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/presentation/rx/next_event_rx_presenter.dart';
@@ -73,8 +72,7 @@ void main() {
 ''';
 final httpClient = HttpAdapter(client: client);
     final repo = LoadNextEventApiRepository(httpClient: httpClient, url: anyString());
-    final nextEventLoader = NextEventLoader(repo: repo);
-    final presenter = NextEventRxPresenter(nextEventLoader: nextEventLoader.call);
+    final presenter = NextEventRxPresenter(nextEventLoader: repo.loadNextEvent);
     final sut = MaterialApp(
       home: NextEventPage(presenter: presenter, groupId: anyString()),
     );
