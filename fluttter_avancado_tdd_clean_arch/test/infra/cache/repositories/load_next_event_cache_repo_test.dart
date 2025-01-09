@@ -8,12 +8,14 @@ import '../../../mocks/fakes.dart';
 final class CacheGetClientSpy implements CacheGetClient {
   String? key;
   int callsCount = 0;
+  Error? error;
   dynamic response;
 
   @override
   Future<dynamic> get({required String key}) async {
     callsCount++;
     this.key = key;
+    if (error != null) throw error!;
     return response;
   }
 }
@@ -112,6 +114,13 @@ void main() {
     expect(event.players[1].photo, 'photo 2');
     expect(event.players[1].confirmationDate, DateTime(2024, 8, 29, 11, 0));
     expect(event.players[1].isConfirmed, true);
+  });
+
+  test('should rethrow on error', () async {
+    final error = Error();
+    cacheClient.error = error;
+    final future = sut.loadNextEvent(groupId: groupId);
+    expect(future, throwsA(error));
   });
 
 }
