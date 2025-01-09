@@ -1,23 +1,36 @@
-import 'dart:typed_data';
 
+import 'dart:typed_data';
 import 'package:file/file.dart';
+
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../mocks/fakes.dart';
+import 'file_spy.dart';
 
 final class CacheManagerAdapter {
   final BaseCacheManager client;
   const CacheManagerAdapter({required this.client});
 
-  Future<void> get({required String key}) async {
+  Future<dynamic> get({required String key}) async {
     await client.getFileFromCache(key);
+    return null;
   }
 }
 
 class CacheManagerClientSpy implements BaseCacheManager {
   int getFileFromCacheCallsCount = 0;
   String? key;
+  bool _isFileInfoEmpty = false;
+
+  void simulateEmptyInfo() => _isFileInfoEmpty = true;
+
+  @override
+  Future<FileInfo?> getFileFromCache(String key, {bool ignoreMemCache = false}) async {
+    getFileFromCacheCallsCount ++;
+    this.key = key;
+    return _isFileInfoEmpty ? null : FileInfo(FileSpy(), FileSource.Cache, DateTime.now(), '');
+  }
 
   @override
   Future<void> dispose() => throw UnimplementedError();
@@ -30,13 +43,6 @@ class CacheManagerClientSpy implements BaseCacheManager {
 
   @override
   Stream<FileInfo> getFile(String url, {String? key, Map<String, String>? headers}) => throw UnimplementedError();
-
-  @override
-  Future<FileInfo?> getFileFromCache(String key, {bool ignoreMemCache = false}) async {
-    getFileFromCacheCallsCount ++;
-    this.key = key;
-    return null;
-  }
 
   @override
   Future<FileInfo?> getFileFromMemory(String key) => throw UnimplementedError();
@@ -68,13 +74,16 @@ void main() {
     client = CacheManagerClientSpy();
     sut = CacheManagerAdapter(client: client);
   });
-  
-  test('should call getFileFromCache with correct input', () {
-    key = anyString();
-    client = CacheManagerClientSpy();
-    sut = CacheManagerAdapter(client: client);
-    sut.get(key: key);
+
+  test('should call getFileFromCache with correct input', () async {
+    await sut.get(key: key);
     expect(client.key, key);
     expect(client.getFileFromCacheCallsCount, 1);
+  });
+
+  test('should return null if FileInfo is empty ', () async {
+    client.simulateEmptyInfo();
+    final response = await sut.get(key: key);
+    expect(response, isNull);
   });
 }
