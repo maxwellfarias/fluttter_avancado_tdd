@@ -60,10 +60,19 @@ class CacheManagerClientSpy implements BaseCacheManager {
 }
 
 void main() {
+  late String key;
+  late CacheManagerClientSpy client;
+  late CacheManagerAdapter sut;
+  setUp(() {
+    key = anyString();
+    client = CacheManagerClientSpy();
+    sut = CacheManagerAdapter(client: client);
+  });
+  
   test('should call getFileFromCache with correct input', () {
-    final key = anyString();
-    final client = CacheManagerClientSpy();
-    final sut = CacheManagerAdapter(client: client);
+    key = anyString();
+    client = CacheManagerClientSpy();
+    sut = CacheManagerAdapter(client: client);
     sut.get(key: key);
     expect(client.key, key);
     expect(client.getFileFromCacheCallsCount, 1);
