@@ -11,11 +11,7 @@ final class HttpGetClientSpy implements HttpGetClient {
   Error? error;
 
   @override
-  Future get(
-      {required String url,
-      Json? headers,
-      Json? params,
-      Json? queryString}) async {
+  Future get({required String url, Json? headers, Json? params, Json? queryString}) async {
     callsCount++;
     this.url = url;
     this.params = params;
