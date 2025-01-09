@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   }
 }
 /*
-O hotReload não reconstroi o state, mas apenas reconstroi a tela o chamando novamente o metodo build. Dessa forma, os metodos de que fazer uma chamada no initState() para recuperar os
+//:O hotReload não reconstroi o state, mas apenas reconstroi a tela o chamando novamente o metodo build. Dessa forma, os metodos de que fazer uma chamada no initState() para recuperar os
 dados no servidor não seriam chamados. Isso faz com que após a reconstrução no build, o snapshot.connectionState fica no estado de awaiting, mostrando dessa forma o CircularProgressIndicator
 para sempre, pois como a chamada a API não foi feita, os dados não retornarão e o snapshot.connectionState não mudará o seu estado.
  */
