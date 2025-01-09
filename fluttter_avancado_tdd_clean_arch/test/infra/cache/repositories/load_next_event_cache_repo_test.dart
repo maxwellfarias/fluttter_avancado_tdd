@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/clients/cache_get_client.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/repositories/load_next_event_cache_repo.dart';
 
 
 import '../../../mocks/fakes.dart';
@@ -18,52 +18,6 @@ final class CacheGetClientSpy implements CacheGetClient {
     if (error != null) throw error!;
     return response;
   }
-}
-
-abstract interface class CacheGetClient {
-  Future<dynamic> get({ required String key});
-}
-
-class LoadNextEventCacheRepository {
-  final CacheGetClient cacheClient;
-  final String key;
-
-  const LoadNextEventCacheRepository({
-    required this.cacheClient,
-    required this.key,
-  });
-
-  Future<NextEvent> loadNextEvent({required String groupId}) async {
-   final json = await cacheClient.get(key: '$key:$groupId');
-   return NextEventMapper().toObject(json);
-  }
-}
-
-final class NextEventMapper extends Mapper<NextEvent> {
-  @override
-  NextEvent toObject(dynamic json) => NextEvent(
-        groupName: json['groupName'],
-        date: json['date'],
-        //Ao fazer o map, é preciso especificar o tipo de dado que será retornado, no caso, NextEventPlayer
-        players: NextEventPlayerMapper().toList(json['players']),
-      );
-}
-abstract base class Mapper<Entity> {
-  List<Entity> toList(dynamic arr) => arr.map<Entity>(toObject).toList();
-
-  Entity toObject(dynamic json);
-}
-
-final class NextEventPlayerMapper extends Mapper<NextEventPlayer> {
-  @override
-  NextEventPlayer toObject(dynamic json) => NextEventPlayer(
-        id: json['id'],
-        name: json['name'],
-        isConfirmed: json['isConfirmed'],
-        position: json['position'],
-        photo: json['photo'],
-        confirmationDate: json['confirmationDate'],
-      );
 }
 
 
