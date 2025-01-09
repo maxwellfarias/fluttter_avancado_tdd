@@ -1,25 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/clients/cache_get_client.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/repositories/load_next_event_cache_repo.dart';
 
-
 import '../../../mocks/fakes.dart';
-
-final class CacheGetClientSpy implements CacheGetClient {
-  String? key;
-  int callsCount = 0;
-  Error? error;
-  dynamic response;
-
-  @override
-  Future<dynamic> get({required String key}) async {
-    callsCount++;
-    this.key = key;
-    if (error != null) throw error!;
-    return response;
-  }
-}
-
+import 'mocks/cache_get_client_spy.dart';
 
 void main() {
   late String groupId;
