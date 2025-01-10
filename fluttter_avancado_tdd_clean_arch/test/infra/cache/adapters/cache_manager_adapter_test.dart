@@ -17,8 +17,8 @@ final class CacheManagerAdapter {
     final info = await client.getFileFromCache(key);
     if (info == null) return null;
     if (info.validTill.isBefore(DateTime.now()) || !await info.file.exists()) return null;
-    final data = await info.file.readAsString();
     try {
+      final data = await info.file.readAsString();
       return jsonDecode(data);
     } catch (err) {
       return null;
@@ -95,8 +95,8 @@ void main() {
 
   test('should return null if FileInfo is empty ', () async {
     client.simulateEmptyInfo();
-    final response = await sut.get(key: key);
-    expect(response, isNull);
+    final json = await sut.get(key: key);
+    expect(json, isNull);
   });
 
   test('should return null if cache is old ', () async {
@@ -112,8 +112,8 @@ void main() {
 
   test('should return null if file is empty', () async {
     client.file.simulateFileEmpty();
-    final response = await sut.get(key: key);
-    expect(response, isNull);
+    final json = await sut.get(key: key);
+    expect(json, isNull);
   });
 
   test('should call file.readAsString only once', () async {
@@ -137,6 +137,12 @@ void main() {
    final json =  await sut.get(key: key);
     expect(json["key1"], "value1");
     expect(json["key2"], "value2");
+  });
+
+  test('should return null if file.readAsString fails', () async {
+    client.file.simulateReadAsStringError();
+    final json = await sut.get(key: key);
+    expect(json, isNull);
   });
 
 }

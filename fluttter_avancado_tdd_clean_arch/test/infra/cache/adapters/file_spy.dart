@@ -9,6 +9,7 @@ final class FileSpy implements File {
   int readAsStringCallsCount = 0;
   bool _fileExists = true;
   String _response = '{}';
+  Error? _readStringError;
 
   @override
   FileSystem get fileSystem => throw UnimplementedError();
@@ -16,6 +17,7 @@ final class FileSpy implements File {
   bool simulateFileEmpty() => _fileExists = false;
   void simulateInvalidResponse() => _response = 'invalid_json';
   void simulateResponse({required String json}) => _response = json;
+  void simulateReadAsStringError() => _readStringError = Error();
 
 
   @override
@@ -27,6 +29,7 @@ final class FileSpy implements File {
    @override
   Future<String> readAsString({Encoding encoding = utf8}) async {
     readAsStringCallsCount++;
+    if (_readStringError != null) throw _readStringError!;
     return _response;
   }
 
@@ -51,10 +54,7 @@ final class FileSpy implements File {
   }
 
   @override
-  Future<FileSystemEntity> delete({bool recursive = false}) {
-    // TODO: implement delete
-    throw UnimplementedError();
-  }
+  Future<FileSystemEntity> delete({bool recursive = false}) => throw UnimplementedError();
 
   @override
   void deleteSync({bool recursive = false}) {
