@@ -8,11 +8,14 @@ final class FileSpy implements File {
   int existsCallsCount = 0;
   int readAsStringCallsCount = 0;
   bool _fileExists = true;
+  String _response = '{}';
 
   @override
   FileSystem get fileSystem => throw UnimplementedError();
 
-  void simulateFileEmpty() => _fileExists = false;
+  bool simulateFileEmpty() => _fileExists = false;
+  void simulateInvalidResponse() => _response = 'invalid_json';
+
 
   @override
   Future<bool> exists() async {
@@ -23,34 +26,23 @@ final class FileSpy implements File {
    @override
   Future<String> readAsString({Encoding encoding = utf8}) async {
     readAsStringCallsCount++;
-    return '';
+    return _response;
   }
 
   @override
-  // TODO: implement absolute
   File get absolute => throw UnimplementedError();
 
   @override
-  // TODO: implement basename
   String get basename => throw UnimplementedError();
 
   @override
-  Future<File> copy(String newPath) {
-    // TODO: implement copy
-    throw UnimplementedError();
-  }
+  Future<File> copy(String newPath) => throw UnimplementedError();
 
   @override
-  File copySync(String newPath) {
-    // TODO: implement copySync
-    throw UnimplementedError();
-  }
+  File copySync(String newPath) => throw UnimplementedError();
 
   @override
-  Future<File> create({bool recursive = false, bool exclusive = false}) {
-    // TODO: implement create
-    throw UnimplementedError();
-  }
+  Future<File> create({bool recursive = false, bool exclusive = false}) => throw UnimplementedError();
 
   @override
   void createSync({bool recursive = false, bool exclusive = false}) {

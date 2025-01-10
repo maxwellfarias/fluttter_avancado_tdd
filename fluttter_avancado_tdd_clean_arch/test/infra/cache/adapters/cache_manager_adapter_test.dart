@@ -115,4 +115,10 @@ void main() {
     expect(client.file.readAsStringCallsCount, 1);
   });
 
+  test('should return null if cache is invalid', () async {
+    client.file.simulateInvalidResponse();
+    await sut.get(key: key);
+    expect(client.file.readAsStringCallsCount, 1);
+  });
+
 }
