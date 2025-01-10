@@ -5,6 +5,7 @@ import 'package:file/file.dart';
 
 
 final class FileSpy implements File {
+  int existsCallsCount = 0;
 
   @override
   FileSystem get fileSystem => throw UnimplementedError();
@@ -56,9 +57,9 @@ final class FileSpy implements File {
   String get dirname => throw UnimplementedError();
 
   @override
-  Future<bool> exists() {
-    // TODO: implement exists
-    throw UnimplementedError();
+  Future<bool> exists() async {
+    existsCallsCount++;
+    return true;
   }
 
   @override
