@@ -6,6 +6,7 @@ import 'package:file/file.dart';
 
 final class FileSpy implements File {
   int existsCallsCount = 0;
+  int readAsStringCallsCount = 0;
   bool _fileExists = true;
 
   @override
@@ -17,6 +18,12 @@ final class FileSpy implements File {
   Future<bool> exists() async {
     existsCallsCount++;
     return _fileExists;
+  }
+
+   @override
+  Future<String> readAsString({Encoding encoding = utf8}) async {
+    readAsStringCallsCount++;
+    return '';
   }
 
   @override
@@ -164,12 +171,6 @@ final class FileSpy implements File {
   @override
   List<String> readAsLinesSync({Encoding encoding = utf8}) {
     // TODO: implement readAsLinesSync
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<String> readAsString({Encoding encoding = utf8}) {
-    // TODO: implement readAsString
     throw UnimplementedError();
   }
 

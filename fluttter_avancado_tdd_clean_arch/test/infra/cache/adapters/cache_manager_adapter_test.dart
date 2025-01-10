@@ -15,6 +15,7 @@ final class CacheManagerAdapter {
   Future<dynamic> get({required String key}) async {
     final info = await client.getFileFromCache(key);
     await info?.file.exists();
+    await info?.file.readAsString();
     return null;
   }
 }
@@ -107,6 +108,11 @@ void main() {
     client.file.simulateFileEmpty();
     final response = await sut.get(key: key);
     expect(response, isNull);
+  });
+
+  test('should call file.readAsString only once', () async {
+    await sut.get(key: key);
+    expect(client.file.readAsStringCallsCount, 1);
   });
 
 }
