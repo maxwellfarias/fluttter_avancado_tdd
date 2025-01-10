@@ -103,4 +103,10 @@ void main() {
     expect(client.file.existsCallsCount, 1);
   });
 
+  test('should return null if file is empty', () async {
+    client.file.simulateFileEmpty();
+    final response = await sut.get(key: key);
+    expect(response, isNull);
+  });
+
 }

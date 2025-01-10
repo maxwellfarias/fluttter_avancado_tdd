@@ -6,9 +6,18 @@ import 'package:file/file.dart';
 
 final class FileSpy implements File {
   int existsCallsCount = 0;
+  bool _fileExists = true;
 
   @override
   FileSystem get fileSystem => throw UnimplementedError();
+
+  void simulateFileEmpty() => _fileExists = false;
+
+  @override
+  Future<bool> exists() async {
+    existsCallsCount++;
+    return _fileExists;
+  }
 
   @override
   // TODO: implement absolute
@@ -55,12 +64,6 @@ final class FileSpy implements File {
   @override
   // TODO: implement dirname
   String get dirname => throw UnimplementedError();
-
-  @override
-  Future<bool> exists() async {
-    existsCallsCount++;
-    return true;
-  }
 
   @override
   bool existsSync() {
