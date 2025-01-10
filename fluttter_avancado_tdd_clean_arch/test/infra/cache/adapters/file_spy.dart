@@ -15,6 +15,7 @@ final class FileSpy implements File {
 
   bool simulateFileEmpty() => _fileExists = false;
   void simulateInvalidResponse() => _response = 'invalid_json';
+  void simulateResponse({required String json}) => _response = json;
 
 
   @override

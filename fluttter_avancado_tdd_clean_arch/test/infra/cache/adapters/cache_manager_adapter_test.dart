@@ -1,4 +1,5 @@
 
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:file/file.dart';
 
@@ -14,9 +15,14 @@ final class CacheManagerAdapter {
 
   Future<dynamic> get({required String key}) async {
     final info = await client.getFileFromCache(key);
-    await info?.file.exists();
-    await info?.file.readAsString();
-    return null;
+    if (info == null) return null;
+    if (info.validTill.isBefore(DateTime.now()) || !await info.file.exists()) return null;
+    final data = await info.file.readAsString();
+    try {
+      return jsonDecode(data);
+    } catch (err) {
+      return null;
+    }
   }
 }
 
@@ -119,6 +125,18 @@ void main() {
     client.file.simulateInvalidResponse();
     await sut.get(key: key);
     expect(client.file.readAsStringCallsCount, 1);
+  });
+
+  test('should return json if cache is valid', () async {
+    client.file.simulateResponse(json: '''
+        {
+            "key1": "value1",
+            "key2": "value2"
+        }
+    ''');
+   final json =  await sut.get(key: key);
+    expect(json["key1"], "value1");
+    expect(json["key2"], "value2");
   });
 
 }
