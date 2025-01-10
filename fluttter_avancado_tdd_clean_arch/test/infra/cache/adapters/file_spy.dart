@@ -10,6 +10,7 @@ final class FileSpy implements File {
   bool _fileExists = true;
   String _response = '{}';
   Error? _readStringError;
+  Error? _existsError;
 
   @override
   FileSystem get fileSystem => throw UnimplementedError();
@@ -18,11 +19,13 @@ final class FileSpy implements File {
   void simulateInvalidResponse() => _response = 'invalid_json';
   void simulateResponse({required String json}) => _response = json;
   void simulateReadAsStringError() => _readStringError = Error();
+  void simulateExistsError() => _existsError = Error();
 
 
   @override
   Future<bool> exists() async {
     existsCallsCount++;
+    if (_existsError != null) throw _existsError!;
     return _fileExists;
   }
 
