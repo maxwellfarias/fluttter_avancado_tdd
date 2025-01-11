@@ -23,13 +23,19 @@ final class LoadNextEventRepositorySpy {
         callsCount++;
     }
 }
-void main(){
-    test('should load event data from api repo', () async {
-        final groupId = anyString();
-        final apiRepo = LoadNextEventRepositorySpy();
-        final sut = LoadNextEventFromApiWithFallbackRepository(loadNextEventFromApi: apiRepo.loadNextEvent);
-        await sut.loadNextEvent(groupId: groupId);
-        expect(apiRepo.groupId, groupId);
-        expect(apiRepo.callsCount, 1);
-    });
+void main() {
+  late String groupId;
+  late LoadNextEventRepositorySpy apiRepo;
+  late LoadNextEventFromApiWithFallbackRepository sut;
+  
+  setUp(() {
+    groupId = anyString();
+    apiRepo = LoadNextEventRepositorySpy();
+    sut = LoadNextEventFromApiWithFallbackRepository(loadNextEventFromApi: apiRepo.loadNextEvent);
+  });
+  test('should load event data from api repo', () async {
+    await sut.loadNextEvent(groupId: groupId);
+    expect(apiRepo.groupId, groupId);
+    expect(apiRepo.callsCount, 1);
+  });
 }
