@@ -22,6 +22,7 @@ final class FileSpy implements File {
   void simulateExistsError() => _existsError = Error();
 
 
+
   @override
   Future<bool> exists() async {
     existsCallsCount++;
@@ -52,123 +53,70 @@ final class FileSpy implements File {
   Future<File> create({bool recursive = false, bool exclusive = false}) => throw UnimplementedError();
 
   @override
-  void createSync({bool recursive = false, bool exclusive = false}) {
-    // TODO: implement createSync
-  }
+  void createSync({bool recursive = false, bool exclusive = false}) {}
 
   @override
   Future<FileSystemEntity> delete({bool recursive = false}) => throw UnimplementedError();
 
   @override
-  void deleteSync({bool recursive = false}) {
-    // TODO: implement deleteSync
-  }
+  void deleteSync({bool recursive = false}) {}
 
   @override
-  // TODO: implement dirname
   String get dirname => throw UnimplementedError();
 
   @override
-  bool existsSync() {
-    // TODO: implement existsSync
-    throw UnimplementedError();
-  }
+  bool existsSync() => throw UnimplementedError();
 
   @override
-  // TODO: implement isAbsolute
   bool get isAbsolute => throw UnimplementedError();
 
   @override
-  Future<DateTime> lastAccessed() {
-    // TODO: implement lastAccessed
-    throw UnimplementedError();
-  }
+  Future<DateTime> lastAccessed() => throw UnimplementedError();
 
   @override
-  DateTime lastAccessedSync() {
-    // TODO: implement lastAccessedSync
-    throw UnimplementedError();
-  }
+  DateTime lastAccessedSync() => throw UnimplementedError();
 
   @override
-  Future<DateTime> lastModified() {
-    // TODO: implement lastModified
-    throw UnimplementedError();
-  }
+  Future<DateTime> lastModified() => throw UnimplementedError();
 
   @override
-  DateTime lastModifiedSync() {
-    // TODO: implement lastModifiedSync
-    throw UnimplementedError();
-  }
+  DateTime lastModifiedSync() => throw UnimplementedError();
 
   @override
-  Future<int> length() {
-    // TODO: implement length
-    throw UnimplementedError();
-  }
+  Future<int> length() => throw UnimplementedError();
 
   @override
-  int lengthSync() {
-    // TODO: implement lengthSync
-    throw UnimplementedError();
-  }
+  int lengthSync() => throw UnimplementedError();
 
   @override
-  Future<RandomAccessFile> open({FileMode mode = FileMode.read}) {
-    // TODO: implement open
-    throw UnimplementedError();
-  }
+  Future<RandomAccessFile> open({FileMode mode = FileMode.read}) => throw UnimplementedError();
 
   @override
-  Stream<List<int>> openRead([int? start, int? end]) {
-    // TODO: implement openRead
-    throw UnimplementedError();
-  }
+  Stream<List<int>> openRead([int? start, int? end]) => throw UnimplementedError();
 
   @override
-  RandomAccessFile openSync({FileMode mode = FileMode.read}) {
-    // TODO: implement openSync
-    throw UnimplementedError();
-  }
+  RandomAccessFile openSync({FileMode mode = FileMode.read}) => throw UnimplementedError();
 
   @override
-  IOSink openWrite({FileMode mode = FileMode.write, Encoding encoding = utf8}) {
-    // TODO: implement openWrite
-    throw UnimplementedError();
-  }
+  IOSink openWrite({FileMode mode = FileMode.write, Encoding encoding = utf8}) => throw UnimplementedError();
 
   @override
-  // TODO: implement parent
   Directory get parent => throw UnimplementedError();
 
   @override
-  // TODO: implement path
   String get path => throw UnimplementedError();
 
   @override
-  Future<Uint8List> readAsBytes() {
-    // TODO: implement readAsBytes
-    throw UnimplementedError();
-  }
+  Future<Uint8List> readAsBytes() => throw UnimplementedError();
 
   @override
-  Uint8List readAsBytesSync() {
-    // TODO: implement readAsBytesSync
-    throw UnimplementedError();
-  }
+  Uint8List readAsBytesSync() => throw UnimplementedError();
 
   @override
-  Future<List<String>> readAsLines({Encoding encoding = utf8}) {
-    // TODO: implement readAsLines
-    throw UnimplementedError();
-  }
+  Future<List<String>> readAsLines({Encoding encoding = utf8}) => throw UnimplementedError();
 
   @override
-  List<String> readAsLinesSync({Encoding encoding = utf8}) {
-    // TODO: implement readAsLinesSync
-    throw UnimplementedError();
-  }
+  List<String> readAsLinesSync({Encoding encoding = utf8}) => throw UnimplementedError();
 
   @override
   String readAsStringSync({Encoding encoding = utf8}) {
