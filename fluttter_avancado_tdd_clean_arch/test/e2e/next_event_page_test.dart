@@ -85,7 +85,7 @@ final httpClient = HttpAdapter(client: client);
     expect(find.text('Lionel Messi'), findsOneWidget);
     expect(find.text('Claudio Gamarra'), findsOneWidget);
      */
-    
+
     //ensureVisible faz o scroll para encontrar o elemento informado
     await tester.ensureVisible(find.text('Cristiano Ronaldo', skipOffstage: false));
     //atualiza a tela
