@@ -7,7 +7,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../mocks/fakes.dart';
-import 'file_spy.dart';
+import '../mocks/file_spy.dart';
 
 final class CacheManagerAdapter {
   final BaseCacheManager client;
