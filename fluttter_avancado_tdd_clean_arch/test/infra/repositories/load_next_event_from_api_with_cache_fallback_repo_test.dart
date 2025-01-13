@@ -16,10 +16,11 @@ final class LoadNextEventFromApiWithCacheFallbackRepository {
     required this.key,
   });
 
-  Future<void> loadNextEvent({required String groupId}) async {
+  Future<NextEvent> loadNextEvent({required String groupId}) async {
     final event = await loadNextEventFromApi(groupId: groupId);
     final json = NextEventMapper().toJson(event);
     await cacheClient.save(key: '$key:$groupId', value: json);
+    return event;
   }
 }
 
@@ -108,5 +109,10 @@ void main() {
         }
       ]
     });
+  });
+
+  test('should return api data on successs', () async {
+   final event =  await sut.loadNextEvent(groupId: groupId);
+    expect(event, apiRepo.output);
   });
 }
