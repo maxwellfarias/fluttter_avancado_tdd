@@ -5,7 +5,7 @@ import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_play
 import 'package:fluttter_avancado_tdd_clean_arch/infra/repositories/load_next_event_from_api_with_cache_fallback_repo.dart';
 
 import '../../mocks/fakes.dart';
-import '../cache/mock/cach_save_client_spy.dart';
+import '../cache/mock/cach_save_client_mock.dart';
 import '../mocks/load_next_event_repo_spy.dart';
 
 void main() {
@@ -13,7 +13,7 @@ void main() {
   late String key;
   late LoadNextEventRepositorySpy apiRepo;
   late LoadNextEventRepositorySpy cacheRepo;
-  late CacheSaveClientSpy cacheClient;
+  late CacheSaveClientMock cacheClient;
   late LoadNextEventFromApiWithCacheFallbackRepository sut;
 
   setUp(() {
@@ -21,7 +21,7 @@ void main() {
     key = anyString();
     apiRepo = LoadNextEventRepositorySpy();
     cacheRepo = LoadNextEventRepositorySpy();
-    cacheClient = CacheSaveClientSpy();
+    cacheClient = CacheSaveClientMock();
     sut = LoadNextEventFromApiWithCacheFallbackRepository(
       key: key,
       cacheClient: cacheClient,
