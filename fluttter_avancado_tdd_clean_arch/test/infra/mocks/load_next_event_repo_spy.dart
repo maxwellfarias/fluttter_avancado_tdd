@@ -15,6 +15,7 @@ final class LoadNextEventRepositorySpy {
         this.groupId = groupId;
         callsCount++;
         if (error != null) throw error!;
+        if (unexpectedError != null) throw unexpectedError!;
         return output;
     }
 }
