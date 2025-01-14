@@ -6,6 +6,7 @@ import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/clients/cache_save_
 import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/next_event_mapper.dart';
 
 import '../../mocks/fakes.dart';
+import '../cache/mock/cach_save_client_spy.dart';
 
 final class LoadNextEventFromApiWithCacheFallbackRepository {
   final Future<NextEvent> Function({required String groupId}) loadNextEventFromApi;
@@ -49,19 +50,6 @@ final class LoadNextEventRepositorySpy {
         if (error != null) throw error!;
         return output;
     }
-}
-
-class CacheSaveClientSpy implements CacheSaveClient {
-  int callsCount = 0;
-  String? key;
-  dynamic value;
-
-  @override
-  Future<void> save({required String key, required dynamic value}) async {
-    this.key = key;
-    this.value = value;
-    callsCount ++;
-  }
 }
 
 void main() {
