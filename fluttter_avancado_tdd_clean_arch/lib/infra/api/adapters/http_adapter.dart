@@ -52,7 +52,7 @@ final class HttpAdapter implements HttpGetClient {
           return jsonDecode(response.body);
         }
       case 401:
-        throw SessionExpired();
+        throw SessionExpiredError();
       default:
         throw UnexpectedError();
     }

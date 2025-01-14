@@ -14,9 +14,9 @@ class UnexpectedError implements DomainError {
   }
 }
 
-class SessionExpired implements DomainError {
+class SessionExpiredError implements DomainError {
   @override
   String description() {
-    return 'UnexpectedError was thrown';
+    return 'SessionExpiredError was thrown';
   }
 }

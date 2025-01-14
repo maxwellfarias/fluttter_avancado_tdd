@@ -94,7 +94,7 @@ void main() {
     test('should throw UnexpextedError on 401', () async {
       client.simulateUnauthorizedError();
       final future = sut.get(url: url);
-      expect(future, throwsA(isA<SessionExpired>()));
+      expect(future, throwsA(isA<SessionExpiredError>()));
     });
 
     test('should throw UnexpextedError on 403', () async {

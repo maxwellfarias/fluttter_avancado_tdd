@@ -7,7 +7,7 @@ final class LoadNextEventRepositorySpy {
     String? groupId;
     int callsCount = 0;
     NextEvent output = NextEvent(groupName: anyString(), date: anyDate(), players: []);
-    Error? error;
+    Object? error;
 
     Future<NextEvent> loadNextEvent({required String groupId}) async {
         this.groupId = groupId;
