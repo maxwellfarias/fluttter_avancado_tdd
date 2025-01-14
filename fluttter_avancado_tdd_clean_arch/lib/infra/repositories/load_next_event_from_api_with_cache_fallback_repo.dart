@@ -21,12 +21,8 @@ final class LoadNextEventFromApiWithCacheFallbackRepository {
       final json = NextEventMapper().toJson(event);
       await cacheClient.save(key: '$key:$groupId', value: json);
       return event;
-    } catch (e) {
-      try {
-        return await loadNextEventFromCache(groupId: groupId);
-      } catch (e) {
-        rethrow;
-      }
+    } catch (error) {
+      return loadNextEventFromCache(groupId: groupId);
     }
   }
 }

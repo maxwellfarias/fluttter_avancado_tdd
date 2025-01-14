@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/errors.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/repositories/load_next_event_from_api_with_cache_fallback_repo.dart';
@@ -86,12 +85,11 @@ void main() {
     expect(event, cacheRepo.output);
   });
 
-//:Forma correta de se verificar um try catch dentro de outro try catch
-  test('should throw Unexpected error when api and cache fails', () async {
+  test('should rethrow cache error when api cache fails', () async {
     apiRepo.error = Error();
-    cacheRepo.unexpectedError = UnexpectedError();
+    cacheRepo.error = Error();
     final future = sut.loadNextEvent(groupId: groupId);
     //a sut.loadNextEvent(groupId: groupId) é uma função assíncrona que lança uma exceção, se fosse colocado a palavra-chave await antes da chamada da função, o teste iria falhar, pois a exceção precisa estourar dentro do throwsA que já é programado também para receber futures que estouram exceções.
-    expect(future, throwsA(isA<UnexpectedError>()));
+    expect(future, throwsA(cacheRepo.error));
   });
 }

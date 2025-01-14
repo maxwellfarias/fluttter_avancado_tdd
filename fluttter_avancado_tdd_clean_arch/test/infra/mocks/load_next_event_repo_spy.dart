@@ -1,4 +1,3 @@
-import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/errors.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 
 import '../../mocks/fakes.dart';
@@ -9,13 +8,11 @@ final class LoadNextEventRepositorySpy {
     int callsCount = 0;
     NextEvent output = NextEvent(groupName: anyString(), date: anyDate(), players: []);
     Error? error;
-    DomainError? unexpectedError;
 
     Future<NextEvent> loadNextEvent({required String groupId}) async {
         this.groupId = groupId;
         callsCount++;
         if (error != null) throw error!;
-        if (unexpectedError != null) throw unexpectedError!;
         return output;
     }
 }
