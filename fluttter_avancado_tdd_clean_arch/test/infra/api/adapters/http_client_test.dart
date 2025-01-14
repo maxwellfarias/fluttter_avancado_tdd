@@ -88,30 +88,30 @@ void main() {
     test('should throw UnexpextedError on 400', () async {
       client.simulateBadRequestError();
       final future = sut.get(url: url);
-      expect(future, throwsA(const TypeMatcher<UnexpectedError>()));
+      expect(future, throwsA(isA<UnexpectedError>()));
     });
 
     test('should throw UnexpextedError on 401', () async {
       client.simulateUnauthorizedError();
       final future = sut.get(url: url);
-      expect(future, throwsA(const TypeMatcher<SessionExpired>()));
+      expect(future, throwsA(isA<SessionExpired>()));
     });
 
     test('should throw UnexpextedError on 403', () async {
       client.simulateForbiddenError();
       final future = sut.get(url: url);
-      expect(future, throwsA(const TypeMatcher<UnexpectedError>()));
+      expect(future, throwsA(isA<UnexpectedError>()));
     });
 
     test('should throw UnexpextedError on 404', () async {
       client.simulateNotFoundError();
       final future = sut.get(url: url);
-      expect(future, throwsA(const TypeMatcher<UnexpectedError>()));
+      expect(future, throwsA(isA<UnexpectedError>()));
     });
     test('should throw UnexpextedError on 500', () async {
       client.simulateServerError();
       final future = sut.get(url: url);
-      expect(future, throwsA(const TypeMatcher<UnexpectedError>()));
+      expect(future, throwsA(isA<UnexpectedError>()));
     });
 
     test('should return a map', () async {

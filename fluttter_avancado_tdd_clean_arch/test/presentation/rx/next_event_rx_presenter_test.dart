@@ -79,13 +79,13 @@ test('should emit correct events on load with error', () async {
 
   test('should emit correct events on reload with success', () async {
     expectLater(sut.isBusyStream, emitsInOrder([true, false]));
-    expectLater(sut.nextEventStream, emits(const TypeMatcher<NextEventViewModel>()));
+    expectLater(sut.nextEventStream, emits(isA<NextEventViewModel>()));
     await sut.loadNextEvent(groupId: groupId, isReload: true);
   });
 
   test('should emit correct events on load with success', () async {
     sut.isBusyStream.listen(neverCalled);
-    expectLater(sut.nextEventStream, emits(const TypeMatcher<NextEventViewModel>()));
+    expectLater(sut.nextEventStream, emits(isA<NextEventViewModel>()));
     await sut.loadNextEvent(groupId: groupId);
   });
 

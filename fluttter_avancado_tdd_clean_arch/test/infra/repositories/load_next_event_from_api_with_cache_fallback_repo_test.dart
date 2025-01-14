@@ -92,6 +92,6 @@ void main() {
     cacheRepo.unexpectedError = UnexpectedError();
     final future = sut.loadNextEvent(groupId: groupId);
     //a sut.loadNextEvent(groupId: groupId) é uma função assíncrona que lança uma exceção, se fosse colocado a palavra-chave await antes da chamada da função, o teste iria falhar, pois a exceção precisa estourar dentro do throwsA que já é programado também para receber futures que estouram exceções.
-    expect(future, throwsA(const TypeMatcher<UnexpectedError>()));
+    expect(future, throwsA(isA<UnexpectedError>()));
   });
 }
