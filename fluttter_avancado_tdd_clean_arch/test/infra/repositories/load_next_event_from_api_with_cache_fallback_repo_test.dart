@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/errors.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/clients/mappers/next_event_mapper.dart';
@@ -138,5 +139,11 @@ void main() {
     apiRepo.error = Error();
     final event = await sut.loadNextEvent(groupId: groupId);
     expect(event, cacheRepo.output);
+  });
+
+  test('should throw Unexpected error when api and cache fails', () async {
+    apiRepo.error = Error();
+    cacheRepo.error = Error();
+    sut.loadNextEvent(groupId: groupId).then((_){}, onError: (error) => expect(error, UnexpectedError()));
   });
 }

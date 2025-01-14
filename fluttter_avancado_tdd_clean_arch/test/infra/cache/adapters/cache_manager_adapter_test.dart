@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/infra/adapters/cache_manager_adapter.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/adapters/cache_manager_adapter.dart';
 
 import '../../../mocks/fakes.dart';
 import '../mock/cache_manager_spy.dart';
