@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/errors.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/clients/cache_save_client.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/next_event_mapper.dart';
 
 import '../../mocks/fakes.dart';
@@ -48,11 +49,6 @@ final class LoadNextEventRepositorySpy {
         if (error != null) throw error!;
         return output;
     }
-}
-
-abstract interface class CacheSaveClient {
-    //value é dynamic porque pode ser salvo um json ou um array de json
-    Future<void> save({required String key, required dynamic value});
 }
 
 class CacheSaveClientSpy implements CacheSaveClient {
