@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/errors.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/clients/mappers/next_event_mapper.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/next_event_mapper.dart';
 
 import '../../mocks/fakes.dart';
 
@@ -26,7 +26,11 @@ final class LoadNextEventFromApiWithCacheFallbackRepository {
       await cacheClient.save(key: '$key:$groupId', value: json);
       return event;
     } catch (e) {
-      return await loadNextEventFromCache(groupId: groupId);
+      try {
+        return await loadNextEventFromCache(groupId: groupId);
+      } catch (e) {
+        rethrow;
+      }
     }
   }
 }
@@ -36,6 +40,7 @@ final class LoadNextEventRepositorySpy {
     int callsCount = 0;
     NextEvent output = NextEvent(groupName: anyString(), date: anyDate(), players: []);
     Error? error;
+    DomainError? unexpectedError;
 
     Future<NextEvent> loadNextEvent({required String groupId}) async {
         this.groupId = groupId;
@@ -141,9 +146,10 @@ void main() {
     expect(event, cacheRepo.output);
   });
 
+//:Forma correta de se verificar um try catch dentro de outro try catch
   test('should throw Unexpected error when api and cache fails', () async {
     apiRepo.error = Error();
-    cacheRepo.error = Error();
-    sut.loadNextEvent(groupId: groupId).then((_){}, onError: (error) => expect(error, UnexpectedError()));
+    cacheRepo.unexpectedError = UnexpectedError();
+    sut.loadNextEvent(groupId: groupId).then((_){}, onError: (error) => expect(error, isA<UnexpectedError>()));
   });
 }
