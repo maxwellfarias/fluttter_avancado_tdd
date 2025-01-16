@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/errors.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/adapters/cache_manager_adapter.dart';
 
 import '../../../mocks/fakes.dart';
@@ -89,21 +88,28 @@ void main() {
   });
 
   group('save', () {
-    test('should call putfile with correct input', () async {
-      final value = {
+    late Map value;
+
+    setUp(() {
+      value = {
         'key1': anyString(),
         'key2': anyBool(),
         'key3': anyIsoDate(),
         'key4': anyInt(),
       };
-      //: Para realizar o teste e confirmar se o valor que está sendo salvo foi convertido de maneira correta em uma lista de utf8 (array de bytes) foi necessário acessar o array de bytes
-      //salvo, converte-lo para dynamic e depois realizar a comparação.
+    });
+
+    test('should call putfile with correct input', () async {
       await sut.save(key: key, value: value);
-      final fileByteDecoded = jsonDecode(utf8.decode(client.fileBytes!));
       expect(client.key, key);
       expect(client.fileExtension, 'json');
-      expect(fileByteDecoded, value);
+      expect(client.fileByteDecoded, value);
       expect(client.putFileCallsCount, 1);
+    });
+    test('should throw UnexpectedError when putFile fails', () async {
+      client.simulatePutFileError();
+      final future = sut.save(key: key, value: value);
+      expect(future, throwsA(isA<UnexpectedError>()));
     });
   });
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:file/file.dart';
@@ -10,16 +11,18 @@ class CacheManagerClientSpy implements BaseCacheManager {
   int putFileCallsCount = 0;
   String? key;
   String? fileExtension;
-  Uint8List? fileBytes;
+  dynamic fileByteDecoded;
   bool _isFileInfoEmpty = false;
   DateTime _validTill = DateTime.now().add(const Duration(seconds: 2));
   FileSpy file = FileSpy();
   Error? _fileFromCacheError;
+  Error? _putFileError;
 
 
   void simulateEmptyInfo() => _isFileInfoEmpty = true;
   void simulateCacheOld() => _validTill = DateTime.now().subtract( const Duration(seconds: 2));
   void simulateGetFileFromCacheError() => _fileFromCacheError = Error();
+  void simulatePutFileError() => _putFileError = Error();
 
   @override
   Future<FileInfo?> getFileFromCache(String key, {bool ignoreMemCache = false}) async {
@@ -33,7 +36,10 @@ class CacheManagerClientSpy implements BaseCacheManager {
     putFileCallsCount++;
     this.key = url;
     this.fileExtension = fileExtension;
-    this.fileBytes = fileBytes;
+    //: Para realizar o teste e confirmar se o valor que está sendo salvo foi convertido de maneira correta em uma lista de utf8 (array de bytes) foi necessário acessar o array de bytes
+    //passado no parametro fileBytes, converte-lo para dynamic e atribuir esse valor para a variável fileByteDecoded.
+    fileByteDecoded = jsonDecode(utf8.decode(fileBytes));
+    if (_putFileError != null) throw _putFileError!;
     return file;
   }
 
