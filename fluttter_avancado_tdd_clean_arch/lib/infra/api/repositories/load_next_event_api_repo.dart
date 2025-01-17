@@ -1,6 +1,6 @@
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/clients/http_get_client.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/infra/api/mappers/next_event_mapper.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/next_event_mapper.dart';
 
 class LoadNextEventApiRepository{
   final HttpGetClient httpClient;
