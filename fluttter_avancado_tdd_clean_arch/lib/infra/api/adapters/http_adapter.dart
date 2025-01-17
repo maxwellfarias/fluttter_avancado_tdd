@@ -46,8 +46,6 @@ final class HttpAdapter implements HttpGetClient {
             num → Para números JSON (int ou double).
             bool → Para valores booleanos JSON.
             null → Para valores nulos JSON.
-
-
            */
           return jsonDecode(response.body);
         }

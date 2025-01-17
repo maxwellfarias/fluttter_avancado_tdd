@@ -3,9 +3,11 @@ import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 
 import 'mapper.dart';
 
-final class NextEventPlayerMapper extends Mapper<NextEventPlayer> {
+final class NextEventPlayerMapper extends ListMapper<NextEventPlayer> {
+    //:O parâmetro toDto(dynamic json) precisa obrigatoriamente ser do tipo dynamic, pois quando é feito o 'return jsonDecode(response.body)' no HttpAdapter,
+    //o jsonDecode converte todo array (neste caso a propriedade players) em um valor dynamic.
   @override
-  NextEventPlayer toObject(dynamic json) => NextEventPlayer(
+  NextEventPlayer toDto(dynamic json) => NextEventPlayer(
         id: json['id'],
         name: json['name'],
         isConfirmed: json['isConfirmed'],
@@ -14,7 +16,8 @@ final class NextEventPlayerMapper extends Mapper<NextEventPlayer> {
         confirmationDate: DateTime.tryParse(json['confirmationDate'] ?? ''),
       );
 
-      Json toJson(NextEventPlayer player) => {
+  @override
+  Json toJson(NextEventPlayer player) => {
         'id': player.id,
         'name': player.name,
         'isConfirmed': player.isConfirmed,
@@ -22,7 +25,4 @@ final class NextEventPlayerMapper extends Mapper<NextEventPlayer> {
         'photo': player.photo,
         'confirmationDate': player.confirmationDate?.toIso8601String()
       };
-
-      JsonArr toJsonArr(List<NextEventPlayer> players) => players.map(toJson).toList();
-
 }

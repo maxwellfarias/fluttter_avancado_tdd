@@ -1,20 +1,22 @@
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 
 import 'mapper.dart';
 import 'next_event_player_mapper.dart';
 
-final class NextEventMapper extends Mapper<NextEvent> {
+final class NextEventMapper implements Mapper<NextEvent> {
   @override
-  NextEvent toObject(dynamic json) => NextEvent(
+  NextEvent toDto (Json json) => NextEvent(
         groupName: json['groupName'],
         date: DateTime.parse(json['date']),
-        players: NextEventPlayerMapper().toList(json['players']),
+        players: NextEventPlayerMapper().toDtoList(json['players']),
       );
 
-      Json toJson(NextEvent event) => {
-        'groupName': event.groupName,
-        'date': event.date.toIso8601String(),
-        'players': NextEventPlayerMapper().toJsonArr(event.players)
+      @override
+        Json toJson(NextEvent dto) => {
+        'groupName': dto.groupName,
+        'date': dto.date.toIso8601String(),
+        'players': NextEventPlayerMapper().toJsonArr(dto.players)
       };
 }

@@ -70,7 +70,7 @@ void main() {
     }]
   }
 ''';
-final httpClient = HttpAdapter(client: client);
+    final httpClient = HttpAdapter(client: client);
     final repo = LoadNextEventApiRepository(httpClient: httpClient, url: anyString());
     final presenter = NextEventRxPresenter(nextEventLoader: repo.loadNextEvent);
     final sut = MaterialApp(
