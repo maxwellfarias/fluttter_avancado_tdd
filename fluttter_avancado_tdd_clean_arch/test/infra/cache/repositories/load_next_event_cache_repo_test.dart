@@ -16,7 +16,7 @@ void main() {
     cacheClient = CacheGetClientSpy();
     cacheClient.response = {
       "groupName": "any name",
-      "date": DateTime(2024, 8, 30, 10, 30),
+      "date": '2024-08-30T10:30:00.000',
       "players": [
         {"id": "id 1", "name": "name 1", "isConfirmed": true},
         {
@@ -24,7 +24,7 @@ void main() {
           "name": "name 2",
           "position": "position 2",
           "photo": "photo 2",
-          "confirmationDate": DateTime(2024, 8, 29, 11, 0),
+          "confirmationDate": '2024-08-29T11:00:00.000',
           "isConfirmed": true
         }
       ]
@@ -65,7 +65,7 @@ void main() {
 /*
 //: O professor não aconselha utilizar o mesmo mapper usado no httpRepository para o cacheRepository mesmo quando ambos são iguais porque:
 1. Não faz sentido o cache conhecer sobre a API acoplando essas informações.
-2. Pensando em um cenário (que não é o noss caso) que o mapper da API estivesse fazendo o mapeamento dos dados sem usar o anti corruption layer não fazendo o devido tratamento
-de uma estrutura de dados que não foi bem feitaa, seja porque não estão vindo como gostaríamos ou porque estão em português, reutilizar esse mesmo mapper acabaria replicando
-esse problema em outra parte do código.
+2. Pensando em um cenário (que não é o nosso caso) que o mapper da API estivesse fazendo o mapeamento dos dados sem usar o anti corruption layer não fazendo o devido tratamento
+de uma estrutura de dados que não foi bem feita, seja porque não estão vindo como gostaríamos ou porque estão em português, reutilizar esse mesmo mapper acabaria replicando
+esse problema em outra parte do código. Isso acontece principalmente quando se faz necessário utilizar APIs de terceiros que não temos nenhum controle.
  */

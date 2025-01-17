@@ -34,7 +34,7 @@ void main() {
       expect(client.callsCount, 1);
     });
 
-    test('should request with correct method', () async {
+    test('should request with correct url', () async {
       await sut.get(url: url);
       expect(client.url, url);
     });
