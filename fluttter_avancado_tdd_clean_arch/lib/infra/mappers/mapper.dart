@@ -44,4 +44,13 @@ abstract base class Mapper<Entity> {
 
     Entity toObject(dynamic json);
     }
+
+
+
+
+
+
+Atualmente está sendo feita uma repetição de código na parte de testes que realiza o mapeamente dos dados do Cache e API, ferindo assim o princípio do DRY. A ideia para resolver esse
+problema seria injetando o mapper dentro do repositório e dentro do repositório poderia ser criado um duble de testes para ele...O repository não precisa saber mappear, mas sim retornar o
+mesmo retorno que o mapper deu, confiando assim que o mapper irá fazer o seu trabalho, pois será criado para os mappers testes unitários também.
 */
