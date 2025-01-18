@@ -1,35 +1,48 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/repositories/load_next_event_api_repo.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/mapper.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 import '../../../mocks/fakes.dart';
 import '../mocks/http_get_client_spy.dart';
 
+final class MapperSpy<Dto> implements Mapper<Dto> {
+  Dto toDtoOutput;
+  Json? toDtoInput;
+  int toDtoCallsCount = 0;
+
+  MapperSpy({
+    required this.toDtoOutput,
+  });
+
+  @override
+  Dto toDto(Json json) {
+    this.toDtoInput = json;
+    toDtoCallsCount++;
+    return toDtoOutput;
+  }
+
+  @override
+  Json toJson(Dto dto) {
+    // TODO: implement toJson
+    throw UnimplementedError();
+  }
+}
+
 void main() {
     //:Os nomes das propriedades que sao usadas nos testes são variáveis de controle.
+  late MapperSpy<NextEvent> mapper;
   late String groupId;
   late String url;
   late HttpGetClientSpy httpClient;
   late LoadNextEventApiRepository sut;
 
   setUp(() {
+    mapper = MapperSpy(toDtoOutput: anyNextEvent());
     groupId = anyString();
     url = anyString();
     httpClient = HttpGetClientSpy();
-    httpClient.response = {
-      "groupName": "any name",
-      "date": "2024-08-30T10:30:00",
-      "players": [
-        {"id": "id 1", "name": "name 1", "isConfirmed": true},
-        {
-          "id": "id 2",
-          "name": "name 2",
-          "position": "position 2",
-          "photo": "photo 2",
-          "confirmationDate": "2024-08-29T11:00:00",
-          "isConfirmed": true
-        }
-      ]
-    };
-    sut = LoadNextEventApiRepository(httpClient: httpClient, url: url);
+    sut = LoadNextEventApiRepository(httpClient: httpClient, url: url, mapper: mapper);
   });
 
   test('should call httpClient with correct input', () async {
@@ -39,19 +52,11 @@ void main() {
     expect(httpClient.callsCount, 1);
   });
 
-  test('should return next event with success', () async {
+  test('should return next event on success', () async {
     final event = await sut.loadNextEvent(groupId: groupId);
-    expect(event.groupName, 'any name');
-    expect(event.date, DateTime(2024, 8, 30, 10, 30));
-    expect(event.players[0].id, 'id 1');
-    expect(event.players[0].name, 'name 1');
-    expect(event.players[0].isConfirmed, true);
-    expect(event.players[1].id, 'id 2');
-    expect(event.players[1].name, 'name 2');
-    expect(event.players[1].position, 'position 2');
-    expect(event.players[1].photo, 'photo 2');
-    expect(event.players[1].confirmationDate, DateTime(2024, 8, 29, 11, 0));
-    expect(event.players[1].isConfirmed, true);
+    expect(mapper.toDtoInput, httpClient.response);
+    expect(mapper.toDtoCallsCount, 1);
+    expect(event, mapper.toDtoOutput);
   });
 
   test('should rethrow on error', () async {

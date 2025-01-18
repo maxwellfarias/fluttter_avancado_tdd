@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 
@@ -12,3 +13,4 @@ Json anyJson() => {anyString(): anyString()};
 JsonArr anyJsonArr() => List.generate(anyInt(5), (_) => anyJson());
 NextEventPlayer anyNextEventPlayer() => NextEventPlayer(id: anyString(), name: anyString(), isConfirmed: anyBool());
 List<NextEventPlayer> anyNextEventPlayerList() => List.generate(anyInt(5), (_) => anyNextEventPlayer());
+NextEvent anyNextEvent () => NextEvent(groupName: anyString(), date: anyDate(), players: anyNextEventPlayerList());
