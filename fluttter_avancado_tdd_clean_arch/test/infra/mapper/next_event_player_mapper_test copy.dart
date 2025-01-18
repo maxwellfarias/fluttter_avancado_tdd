@@ -20,7 +20,9 @@ void main() {
       "confirmationDate": '2025-01-18T02:00:00.000',
       "isConfirmed": anyBool()
     };
+
     final dto = sut.toDto(json);
+    
     expect(dto.id, json['id']);
     expect(dto.name, json['name']);
     expect(dto.position, json['position']);
@@ -35,7 +37,9 @@ void main() {
       "name": anyString(),
       "isConfirmed": anyBool()
     };
+
     final dto = sut.toDto(json);
+
     expect(dto.id, json['id']);
     expect(dto.name, json['name']);
     expect(dto.position, isNull);
@@ -62,5 +66,22 @@ void main() {
     expect(json['confirmationDate'], '2024-01-18T02:00:00.000');
     expect(json['photo'], dto.photo);
     expect(json['position'], dto.position);
+  });
+
+  test('should map to json with empty fields', () {
+    final dto = NextEventPlayer(
+      id: anyString(),
+      name: anyString(),
+      isConfirmed: anyBool(),
+    );
+
+    final json = sut.toJson(dto);
+
+    expect(json['id'], dto.id);
+    expect(json['name'], dto.name);
+    expect(json['isConfirmed'], dto.isConfirmed);
+    expect(json['confirmationDate'], isNull);
+    expect(json['photo'], isNull);
+    expect(json['position'], isNull);
   });
 }

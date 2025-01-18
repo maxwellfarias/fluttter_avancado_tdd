@@ -1,6 +1,7 @@
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/clients/http_get_client.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/next_event_mapper.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/next_event_player_mapper.dart';
 
 class LoadNextEventApiRepository{
   final HttpGetClient httpClient;
@@ -13,7 +14,7 @@ class LoadNextEventApiRepository{
   Future<NextEvent> loadNextEvent({required String groupId}) async {
     final event =
         await httpClient.get(url: url, params: {"groupId": groupId});
-    return NextEventMapper().toDto(event);
+    return NextEventMapper(playerMapper: NextEventPlayerMapper()).toDto(event);
   }
 }
 
