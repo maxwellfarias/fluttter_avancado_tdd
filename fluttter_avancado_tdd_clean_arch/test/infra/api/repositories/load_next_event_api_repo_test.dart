@@ -1,33 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/repositories/load_next_event_api_repo.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/mapper.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/infra/types/json.dart';
 import '../../../mocks/fakes.dart';
+import '../../../mocks/mapper_spy.dart';
 import '../mocks/http_get_client_spy.dart';
-
-final class MapperSpy<Dto> implements Mapper<Dto> {
-  Dto toDtoOutput;
-  Json? toDtoInput;
-  int toDtoCallsCount = 0;
-
-  MapperSpy({
-    required this.toDtoOutput,
-  });
-
-  @override
-  Dto toDto(Json json) {
-    this.toDtoInput = json;
-    toDtoCallsCount++;
-    return toDtoOutput;
-  }
-
-  @override
-  Json toJson(Dto dto) {
-    // TODO: implement toJson
-    throw UnimplementedError();
-  }
-}
 
 void main() {
     //:Os nomes das propriedades que sao usadas nos testes são variáveis de controle.
