@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/repositories/load_next_event_api_repo.dart';
 import '../../../mocks/fakes.dart';
-import '../../../mocks/mapper_spy.dart';
+import '../../mocks/mapper_spy.dart';
 import '../mocks/http_get_client_spy.dart';
 
 void main() {
