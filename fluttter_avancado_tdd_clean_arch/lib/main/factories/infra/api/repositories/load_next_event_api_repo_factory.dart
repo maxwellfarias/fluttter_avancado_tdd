@@ -1,6 +1,6 @@
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/repositories/load_next_event_api_repo.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/main/factories/infra/api/adapters/http_adapter_factory.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/main/factories/mappers/next_event_mapper_factory.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/main/factories/infra/mappers/next_event_mapper_factory.dart';
 
 LoadNextEventApiRepository makeLoadNextEventApiRepository() {
   return LoadNextEventApiRepository(

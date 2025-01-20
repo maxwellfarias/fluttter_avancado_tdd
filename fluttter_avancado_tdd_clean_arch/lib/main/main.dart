@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/main/factories/infra/api/ui/pages/next_event_page_factory.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/main/factories/ui/pages/next_event_page_factory.dart';
 
 void main() {
   runApp(const MyApp());

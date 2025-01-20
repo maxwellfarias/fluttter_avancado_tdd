@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/next_event_player_mapper.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/main/factories/mappers/next_event_player_mapper_factory.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/main/factories/infra/mappers/next_event_player_mapper_factory.dart';
 
 import '../../mocks/fakes.dart';
 
