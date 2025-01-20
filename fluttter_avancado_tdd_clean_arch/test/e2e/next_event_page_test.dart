@@ -3,17 +3,60 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/adapters/http_adapter.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/repositories/load_next_event_api_repo.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/adapters/cache_manager_adapter.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/repositories/load_next_event_cache_repo.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/next_event_mapper.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/repositories/load_next_event_from_api_with_cache_fallback_repo.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/main/factories/infra/mappers/next_event_mapper_factory.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/presentation/rx/next_event_rx_presenter.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/ui/pages/next_event_page.dart';
 
 import '../infra/api/mocks/client_spy.dart';
+import '../infra/cache/mock/cache_manager_spy.dart';
 import '../mocks/fakes.dart';
 
 void main() {
-  testWidgets('should present nextEvent page', (tester) async {
-    final client = ClientSpy();
-    client.responseJson = '''
+
+  late ClientSpy client;
+  late CacheManagerClientSpy cacheManager;
+  late String key;
+  late HttpAdapter httpClient;
+  late CacheManagerAdapter cacheClient;
+  late LoadNextEventApiRepository apiRepo;
+  late LoadNextEventCacheRepository cacheRepo;
+  late LoadNextEventFromApiWithCacheFallbackRepository repo;
+  late NextEventMapper mapper;
+  late NextEventRxPresenter presenter;
+  late Widget sut;
+  late String responseJson;
+
+    setUp(() {
+    key = anyString();
+    client = ClientSpy();
+    httpClient = HttpAdapter(client: client);
+    mapper = makeNextEventMapper();
+    apiRepo = LoadNextEventApiRepository(
+      httpClient: httpClient,
+      url: anyString(),
+      mapper: mapper,
+    );
+    cacheManager = CacheManagerClientSpy();
+    cacheClient = CacheManagerAdapter(client: cacheManager);
+    cacheRepo = LoadNextEventCacheRepository(
+        cacheClient: cacheClient, key: key, mapper: mapper);
+        repo = LoadNextEventFromApiWithCacheFallbackRepository(
+      cacheClient: cacheClient,
+      key: key,
+      loadNextEventFromApi: apiRepo.loadNextEvent,
+      loadNextEventFromCache: cacheRepo.loadNextEvent,
+      mappper: mapper,
+    );
+    presenter = NextEventRxPresenter(nextEventLoader: repo.loadNextEvent);
+     sut = MaterialApp(
+      home: NextEventPage(presenter: presenter, groupId: anyString()),
+    );
+
+    responseJson = '''
 {
     "id": "1",
     "groupName": "Pelada Chega+",
@@ -71,16 +114,9 @@ void main() {
     }]
   }
 ''';
-    final httpClient = HttpAdapter(client: client);
-    final repo = LoadNextEventApiRepository(
-      httpClient: httpClient,
-      url: anyString(),
-      mapper: makeNextEventMapper(),
-    );
-    final presenter = NextEventRxPresenter(nextEventLoader: repo.loadNextEvent);
-    final sut = MaterialApp(
-      home: NextEventPage(presenter: presenter, groupId: anyString()),
-    );
+  });
+  testWidgets('should present api data', (tester) async {
+    client.responseJson = responseJson;
     await tester.pumpWidget(sut);
     await tester.pump();
       /*
@@ -101,6 +137,22 @@ void main() {
     await tester.pump();
     expect(find.text('Lionel Messi'), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Claudio Gamarra', skipOffstage: false));
+    await tester.pump();
+    expect(find.text('Claudio Gamarra'), findsOneWidget);
+  });
+
+  testWidgets('should present api data', (tester) async {
+    client.simulateServerError();
+    cacheManager.file.simulateResponse(json: responseJson);
+    await tester.pumpWidget(sut);
+    await tester.pump();
+    await tester.ensureVisible(find.text('Cristiano Ronaldo', skipOffstage: false));
+    await tester.pump();
+    expect(find.text('Cristiano Ronaldo'), findsOneWidget);
+    await tester.ensureVisible(find.text('Lionel Messi', skipOffstage: false));
+    await tester.pump();
+    expect(find.text('Lionel Messi'), findsOneWidget);
     await tester.ensureVisible(find.text('Claudio Gamarra', skipOffstage: false));
     await tester.pump();
     expect(find.text('Claudio Gamarra'), findsOneWidget);
