@@ -142,7 +142,7 @@ void main() {
     expect(find.text('Claudio Gamarra'), findsOneWidget);
   });
 
-  testWidgets('should present api data', (tester) async {
+  testWidgets('should present cache data', (tester) async {
     client.simulateServerError();
     cacheManager.file.simulateResponse(json: responseJson);
     await tester.pumpWidget(sut);
@@ -156,5 +156,15 @@ void main() {
     await tester.ensureVisible(find.text('Claudio Gamarra', skipOffstage: false));
     await tester.pump();
     expect(find.text('Claudio Gamarra'), findsOneWidget);
+  });
+
+  testWidgets('should present error message', (tester) async {
+    client.simulateServerError();
+    cacheManager.file.simulateInvalidResponse();
+    await tester.pumpWidget(sut);
+    await tester.pump();
+    await tester.ensureVisible(find.text('Algo errado aconteceu, tente novamente.', skipOffstage: false));
+    await tester.pump();
+    expect(find.text('Algo errado aconteceu, tente novamente.'), findsOneWidget);
   });
 }
