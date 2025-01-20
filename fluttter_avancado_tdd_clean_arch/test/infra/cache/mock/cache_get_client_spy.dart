@@ -1,10 +1,12 @@
 import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/clients/cache_get_client.dart';
 
+import '../../../mocks/fakes.dart';
+
 final class CacheGetClientSpy implements CacheGetClient {
   String? key;
   int callsCount = 0;
   Error? error;
-  dynamic response;
+  dynamic response = anyJson();
 
   @override
   Future<dynamic> get({required String key}) async {
