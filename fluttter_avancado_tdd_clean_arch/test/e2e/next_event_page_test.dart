@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/adapters/http_adapter.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/api/repositories/load_next_event_api_repo.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/next_event_mapper.dart';
-import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/next_event_player_mapper.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/main/factories/mappers/next_event_mapper_factory.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/presentation/rx/next_event_rx_presenter.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/ui/pages/next_event_page.dart';
 
@@ -76,7 +75,7 @@ void main() {
     final repo = LoadNextEventApiRepository(
       httpClient: httpClient,
       url: anyString(),
-      mapper: NextEventMapper(playerMapper: NextEventPlayerMapper()),
+      mapper: makeNextEventMapper(),
     );
     final presenter = NextEventRxPresenter(nextEventLoader: repo.loadNextEvent);
     final sut = MaterialApp(

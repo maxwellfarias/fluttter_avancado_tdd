@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/next_event_player_mapper.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/main/factories/mappers/next_event_player_mapper_factory.dart';
 
 import '../../mocks/fakes.dart';
 
@@ -8,7 +9,7 @@ void main() {
   late NextEventPlayerMapper sut;
 
   setUp((){
-      sut = NextEventPlayerMapper();
+      sut = makeNextEventPlayerMapper();
     });
 
   test('should map to dto', () {
@@ -22,7 +23,7 @@ void main() {
     };
 
     final dto = sut.toDto(json);
-    
+
     expect(dto.id, json['id']);
     expect(dto.name, json['name']);
     expect(dto.position, json['position']);
