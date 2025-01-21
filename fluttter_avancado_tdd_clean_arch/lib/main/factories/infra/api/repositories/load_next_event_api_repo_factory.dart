@@ -5,7 +5,9 @@ import 'package:fluttter_avancado_tdd_clean_arch/main/factories/infra/mappers/ne
 LoadNextEventApiRepository makeLoadNextEventApiRepository() {
   return LoadNextEventApiRepository(
     httpClient: makeHttpAdapter(),
-    url: 'http://127.0.0.1:8080/api/groups/:groupId/next_event',
+    url: 'http://10.0.2.2:8080/api/groups/:groupId/next_event',
     mapper: makeNextEventMapper(),
   );
 }
+//http://127.0.0.1:8080/api/groups/:groupId/next_event
+//http://10.0.2.2:8080/api/groups/:groupId/next_event

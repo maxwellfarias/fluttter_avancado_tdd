@@ -1,6 +1,7 @@
 abstract interface class NextEventPresenter {
   Stream<NextEventViewModel> get nextEventStream;
   Stream<bool> get isBusyStream;
+  void dispose();
   Future<void> loadNextEvent({required String groupId, bool isReload});
 }
 //:Poderia dentro do presentation layer criar uma pasta chamada 'viewModel. O professor não vê como um problema em si, mas seria desnecessário

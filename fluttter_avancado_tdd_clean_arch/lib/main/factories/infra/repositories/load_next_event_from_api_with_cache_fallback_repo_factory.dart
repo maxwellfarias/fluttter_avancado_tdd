@@ -12,7 +12,7 @@ LoadNextEventFromApiWithCacheFallbackRepository makeLoadNextEventFromApiWithCach
   return LoadNextEventFromApiWithCacheFallbackRepository(
       cacheClient: makeCacheManagerAdapter(),
       key: 'next_event',
-      loadNextEventFromApi: makeLoadNextEventCacheRepository().loadNextEvent,
-      loadNextEventFromCache: makeLoadNextEventApiRepository().loadNextEvent,
+      loadNextEventFromApi: makeLoadNextEventApiRepository().loadNextEvent,
+      loadNextEventFromCache: makeLoadNextEventCacheRepository().loadNextEvent,
       mappper: makeNextEventMapper());
 }

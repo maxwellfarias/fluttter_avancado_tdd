@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/main/factories/ui/pages/next_event_page_factory.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

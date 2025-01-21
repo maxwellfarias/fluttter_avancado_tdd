@@ -14,8 +14,7 @@ class LoadNextEventApiRepository{
   });
 
   Future<NextEvent> loadNextEvent({required String groupId}) async {
-    final event =
-        await httpClient.get(url: url, params: {"groupId": groupId});
+    final event = await httpClient.get(url: url, params: {"groupId": groupId});
     return mapper.toDto(event);
   }
 }

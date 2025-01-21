@@ -21,6 +21,12 @@ final isBusySubject = BehaviorSubject<bool>();
   NextEventRxPresenter({required this.nextEventLoader});
 
   @override
+  void dispose() {
+    nextEventSubject.close();
+    isBusySubject.close();
+  }
+
+  @override
   Future<void> loadNextEvent(
       {required String groupId, bool isReload = false}) async {
     try {

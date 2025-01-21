@@ -1,5 +1,7 @@
 //A viewModel deve conter somente as informações que são exigidas na view
 
+import 'dart:async';
+
 import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/presentation/presenters/next_event_presenter.dart';
@@ -18,13 +20,22 @@ final class NextEventPage extends StatefulWidget {
 }
 
 class _NextEventPageState extends State<NextEventPage> {
+  late final StreamSubscription<bool> _isBusySubscription;
+
   @override
   void initState() {
     widget.presenter.loadNextEvent(groupId: widget.groupId);
     //:O listener permanece ativo porque é gerenciado pela StreamSubscription, que não depende diretamente do ciclo de vida do widget. Enquanto você não cancela
     //manualmente a StreamSubscription (chamando .cancel()), ela continua ativa. Para evitar problemas de vazamento, cancele o listener no método dispose.
-    widget.presenter.isBusyStream.listen((isBusy)=> isBusy ? showLoading() : hideLoading());
+    _isBusySubscription = widget.presenter.isBusyStream.listen((isBusy)=> isBusy ? showLoading() : hideLoading());
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _isBusySubscription.cancel();
+     widget.presenter.dispose();
+    super.dispose();
   }
 //:O hotReload não reconstroi o state, mas apenas reconstroi a tela o chamando novamente o metodo build. Dessa forma, os metodos de que fazer uma chamada no initState()
 //para recuperar os dados no servidor não seriam chamados. Isso faz com que após a reconstrução no build, o snapshot.connectionState fica no estado de awaiting, mostrando dessa
