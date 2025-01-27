@@ -4,6 +4,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/errors.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/clients/cache_get_client.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/infra/cache/clients/cache_save_client.dart';
+import 'package:fluttter_avancado_tdd_clean_arch/infra/mappers/next_event_mapper.dart';
 
 final class CacheManagerAdapter implements CacheGetClient, CacheSaveClient {
   final BaseCacheManager client;
@@ -29,4 +30,12 @@ final class CacheManagerAdapter implements CacheGetClient, CacheSaveClient {
         throw UnexpectedError();
     }
   }
+}
+
+ class AbstractImplementingClass extends AbstractClass {
+  @override
+  void abstractMethod() {
+    print('Implementing the abstract method');
+  }
+  // Não é necessário implementar concreteMethod
 }

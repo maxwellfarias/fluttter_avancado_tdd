@@ -33,6 +33,12 @@ void main() {
     expect(presenter.groupId, groupId);
     expect(presenter.isReload, false);
   });
+
+  testWidgets('should called dispose method on preseter', (tester) async {
+    await tester.pumpWidget(sut);
+    await tester.pumpWidget(Container());
+    expect(presenter.disposeCallsCount, 1);
+  });
   testWidgets('should present spinner while data is loading', (tester) async {
     await tester.pumpWidget(sut);
     expect(find.byType(CircularProgressIndicator), findsOne);

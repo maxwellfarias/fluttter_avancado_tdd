@@ -1,6 +1,6 @@
 //No usecase não faz sentido se ter várias implementações dele porque o usecase já é genérico, ele já está abstraído de implementações. O que será feito é que
 //ao invés do presenter depender diretamente do usecase, ele dependerá de uma função que tem a mesma assinatura que se quer chamar no usecase e quando for construir o presenter
-//na camada de construção (composition root) será injetado uma função que tem a mesma assinatura dentro do presenter que será o usecase.
+//na camada de construção (composition root) será injetado uma função que tem a mesma assinatura dentro do presenter que será o repository.
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/domain/entities/next_event_player.dart';
 import 'package:fluttter_avancado_tdd_clean_arch/presentation/presenters/next_event_presenter.dart';

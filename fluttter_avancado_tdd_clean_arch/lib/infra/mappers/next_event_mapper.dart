@@ -23,3 +23,17 @@ final class NextEventMapper implements Mapper<NextEvent> {
         'players': playerMapper.toJsonArr(dto.players)
       };
 }
+
+
+    interface class TMP {
+void foo(){}
+}
+
+abstract  class AbstractClass {
+  void abstractMethod();
+
+  void concreteMethod() {
+    print('Concrete method in abstract class');
+  }
+}
+

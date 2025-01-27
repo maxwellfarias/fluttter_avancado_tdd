@@ -4,6 +4,7 @@ import 'package:rxdart/subjects.dart';
 
 final class NextEventPresenterSpy implements NextEventPresenter {
   int loadCallsCount = 0;
+  int disposeCallsCount = 0;
   bool isReload = false;
   String? groupId;
 
@@ -60,5 +61,10 @@ para facilitar a minha vida, mas a minha camanda de UI não precisa saber disso,
     loadCallsCount++;
     this.groupId = groupId;
     this.isReload = isReload;
+  }
+
+  @override
+  void dispose() {
+    disposeCallsCount++;
   }
 }
