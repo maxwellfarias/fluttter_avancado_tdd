@@ -1,30 +1,30 @@
-# Flutter Avançado - TDD & Clean Architecture
+# Flutter Advanced - TDD & Clean Architecture
 
 ![Flutter Version](https://img.shields.io/badge/Flutter-3.27.0-02569B?logo=flutter)
 ![Dart Version](https://img.shields.io/badge/Dart-3.5.4+-0175C2?logo=dart)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Tests](https://img.shields.io/badge/Tests-14%20files-success)
 
-Projeto Flutter de referência demonstrando a aplicação prática de **Test-Driven Development (TDD)** com **Clean Architecture**, seguindo os princípios SOLID e boas práticas de engenharia de software.
+Reference Flutter project demonstrating practical application of **Test-Driven Development (TDD)** with **Clean Architecture**, following SOLID principles and software engineering best practices.
 
-## 📋 Sobre o Projeto
+## 📋 About the Project
 
-Este projeto implementa um aplicativo para visualização de eventos esportivos (futebol), exibindo informações sobre confirmação de jogadores, posições e status de participação. O foco principal está na **arquitetura**, **testabilidade** e **qualidade de código**.
+This project implements an application for viewing sports events (football/soccer), displaying information about player confirmations, positions, and participation status. The main focus is on **architecture**, **testability**, and **code quality**.
 
-### Características Principais
+### Key Features
 
-- ✅ **100% testado** com TDD (14 arquivos de teste)
-- 🏗️ **Clean Architecture** com separação clara de camadas
-- 🎯 **MVP Pattern** na camada de apresentação
-- 🔄 **Programação Reativa** com RxDart
-- 💾 **Cache local** com fallback automático
-- 🌐 **Integração com API REST**
-- 🧩 **Dependency Injection** com Factory Pattern
-- 📱 **Suporte multiplataforma** (iOS, Android, Web, Desktop)
+- ✅ **100% tested** with TDD (14 test files)
+- 🏗️ **Clean Architecture** with clear layer separation
+- 🎯 **MVP Pattern** in the presentation layer
+- 🔄 **Reactive Programming** with RxDart
+- 💾 **Local cache** with automatic fallback
+- 🌐 **REST API integration**
+- 🧩 **Dependency Injection** with Factory Pattern
+- 📱 **Multi-platform support** (iOS, Android, Web, Desktop)
 
-## 🏛️ Arquitetura
+## 🏛️ Architecture
 
-O projeto segue os princípios da Clean Architecture dividida em 4 camadas:
+The project follows Clean Architecture principles divided into 4 layers:
 
 ```
 ┌─────────────────────────────────────────┐
@@ -56,128 +56,128 @@ O projeto segue os princípios da Clean Architecture dividida em 4 camadas:
 └─────────────────────────────────────────┘
 ```
 
-### Padrões de Design Implementados
+### Design Patterns Implemented
 
-| Padrão | Aplicação |
-|--------|-----------|
-| **MVP** | Separação entre lógica de apresentação e UI |
-| **Repository** | Abstração das fontes de dados |
-| **Factory** | Injeção de dependências no composition root |
-| **Adapter** | Wrapper para bibliotecas externas (HTTP, Cache) |
-| **Strategy** | Múltiplas implementações (API vs Cache) |
-| **Observer** | RxDart Subjects para gerenciamento de estado |
-| **Sealed Class** | Error handling type-safe |
+| Pattern | Application |
+|---------|-------------|
+| **MVP** | Separation between presentation logic and UI |
+| **Repository** | Data source abstraction |
+| **Factory** | Dependency injection in composition root |
+| **Adapter** | Wrapper for external libraries (HTTP, Cache) |
+| **Strategy** | Multiple implementations (API vs Cache) |
+| **Observer** | RxDart Subjects for state management |
+| **Sealed Class** | Type-safe error handling |
 
-## 📁 Estrutura de Pastas
+## 📁 Folder Structure
 
 ```
 lib/
-├── domain/              # Camada de domínio (regras de negócio)
-│   └── entities/        # Entidades puras
+├── domain/              # Domain layer (business rules)
+│   └── entities/        # Pure entities
 │
-├── infra/               # Camada de infraestrutura (dados)
-│   ├── api/            # Comunicação HTTP
-│   ├── cache/          # Cache local
-│   ├── mappers/        # Transformação de dados
-│   └── repositories/   # Implementação dos repositórios
+├── infra/               # Infrastructure layer (data)
+│   ├── api/            # HTTP communication
+│   ├── cache/          # Local cache
+│   ├── mappers/        # Data transformation
+│   └── repositories/   # Repository implementations
 │
-├── presentation/        # Camada de apresentação (MVP)
-│   ├── presenters/     # Interfaces do presenter
-│   └── rx/             # Implementação com RxDart
+├── presentation/        # Presentation layer (MVP)
+│   ├── presenters/     # Presenter interfaces
+│   └── rx/             # RxDart implementation
 │
-├── ui/                  # Camada de interface
-│   ├── pages/          # Telas do app
-│   └── components/     # Componentes reutilizáveis
+├── ui/                  # Interface layer
+│   ├── pages/          # App screens
+│   └── components/     # Reusable components
 │
 ├── main/                # Composition root
 │   ├── main.dart       # Entry point
-│   └── factories/      # Factories para DI
+│   └── factories/      # Factories for DI
 │
-└── test/                # Testes (espelha estrutura do lib/)
+└── test/                # Tests (mirrors lib/ structure)
     ├── domain/
     ├── infra/
     ├── presentation/
     ├── ui/
-    ├── e2e/            # Testes end-to-end
+    ├── e2e/            # End-to-end tests
     └── mocks/          # Test doubles (spies, fakes)
 ```
 
-## 🚀 Começando
+## 🚀 Getting Started
 
-### Pré-requisitos
+### Prerequisites
 
-- Flutter 3.27.0 ou superior
-- Dart 3.5.4 ou superior
-- FVM (recomendado para gerenciamento de versões)
+- Flutter 3.27.0 or higher
+- Dart 3.5.4 or higher
+- FVM (recommended for version management)
 
-### Instalação
+### Installation
 
-1. Clone o repositório:
+1. Clone the repository:
 ```bash
-git clone https://github.com/seu-usuario/flutter_avancado_tdd.git
+git clone https://github.com/your-username/flutter_avancado_tdd.git
 cd flutter_avancado_tdd
 ```
 
-2. Instale as dependências:
+2. Install dependencies:
 ```bash
 flutter pub get
 ```
 
-3. Execute o backend mock (opcional, para testar com API):
+3. Run the mock backend (optional, for testing with API):
 ```bash
 cd backend
 npm install
 npm start
 ```
 
-4. Execute o aplicativo:
+4. Run the application:
 ```bash
 flutter run
 ```
 
-## 🧪 Testes
+## 🧪 Testing
 
-O projeto possui **cobertura completa de testes** seguindo a metodologia TDD.
+The project has **complete test coverage** following TDD methodology.
 
-### Executar todos os testes:
+### Run all tests:
 ```bash
 flutter test
 ```
 
-### Executar testes com cobertura:
+### Run tests with coverage:
 ```bash
 flutter test --coverage
 ```
 
-### Estrutura de Testes
+### Test Structure
 
-| Tipo | Quantidade | Descrição |
-|------|------------|-----------|
-| **Unit Tests** | 8 | Testes de mappers, repositórios, adapters |
-| **Widget Tests** | 5 | Testes de componentes e páginas |
-| **E2E Tests** | 1 | Teste de integração completo |
+| Type | Quantity | Description |
+|------|----------|-------------|
+| **Unit Tests** | 8 | Tests for mappers, repositories, adapters |
+| **Widget Tests** | 5 | Tests for components and pages |
+| **E2E Tests** | 1 | Complete integration test |
 
-**Estratégias de Teste:**
-- ✅ Spy Pattern para verificação de chamadas
-- ✅ Fake Data para testes de entidades
-- ✅ Stream testing com `expectLater`
-- ✅ Widget testing com `tester.pumpWidget`
-- ✅ Sem frameworks de mock (Mockito) - spies customizados
+**Testing Strategies:**
+- ✅ Spy Pattern for call verification
+- ✅ Fake Data for entity testing
+- ✅ Stream testing with `expectLater`
+- ✅ Widget testing with `tester.pumpWidget`
+- ✅ No mock frameworks (Mockito) - custom spies
 
-## 📦 Principais Dependências
+## 📦 Main Dependencies
 
-### Produção
-- `http: ^1.2.2` - Cliente HTTP
-- `rxdart: ^0.28.0` - Programação reativa
-- `flutter_cache_manager: ^3.4.1` - Gerenciamento de cache
-- `dartx: ^1.2.0` - Extensões Dart úteis
-- `awesome_flutter_extensions: ^1.3.0` - Helpers de UI
+### Production
+- `http: ^1.2.2` - HTTP client
+- `rxdart: ^0.28.0` - Reactive programming
+- `flutter_cache_manager: ^3.4.1` - Cache management
+- `dartx: ^1.2.0` - Useful Dart extensions
+- `awesome_flutter_extensions: ^1.3.0` - UI helpers
 
-### Desenvolvimento
-- `flutter_test` - Framework de testes
-- `flutter_lints: ^4.0.0` - Regras de lint
+### Development
+- `flutter_test` - Testing framework
+- `flutter_lints: ^4.0.0` - Lint rules
 
-## 🔄 Fluxo de Dados
+## 🔄 Data Flow
 
 ```
 User Interaction
@@ -187,38 +187,38 @@ User Interaction
    Presenter (RxDart)
       ↓
    Repository (API + Cache Fallback)
-      ├→ HTTP Adapter → API REST
+      ├→ HTTP Adapter → REST API
       └→ Cache Adapter → Local Storage
 ```
 
-### Estratégia de Cache
+### Cache Strategy
 
-1. **Tenta buscar da API** primeiro
-2. Se bem-sucedido: **salva no cache**
-3. Se falhar: **busca do cache** (fallback)
-4. Exibe dados ou erro ao usuário
+1. **Try fetching from API** first
+2. If successful: **save to cache**
+3. If fails: **fetch from cache** (fallback)
+4. Display data or error to user
 
-## 🎨 Features Implementadas
+## 🎨 Implemented Features
 
-### Tela de Próximo Evento
-- ✅ Carregamento de evento por grupo
-- ✅ Exibição de jogadores por categoria:
-  - Goleiros confirmados
-  - Jogadores de linha confirmados
-  - Jogadores que recusaram
-  - Jogadores sem resposta
-- ✅ Avatar com foto ou iniciais automáticas
-- ✅ Tradução de posições para PT-BR
-- ✅ Indicador de status de confirmação
+### Next Event Screen
+- ✅ Event loading by group
+- ✅ Player display by category:
+  - Confirmed goalkeepers
+  - Confirmed field players
+  - Players who declined
+  - Players with no response
+- ✅ Avatar with photo or automatic initials
+- ✅ Position translation to PT-BR
+- ✅ Confirmation status indicator
 - ✅ Pull-to-refresh
-- ✅ Tratamento de erros com retry
+- ✅ Error handling with retry
 - ✅ Loading states
 
-## 🔧 Configuração
+## 🔧 Configuration
 
 ### FVM (Flutter Version Management)
 
-O projeto usa FVM para garantir consistência da versão do Flutter:
+The project uses FVM to ensure Flutter version consistency:
 
 ```json
 {
@@ -228,58 +228,58 @@ O projeto usa FVM para garantir consistência da versão do Flutter:
 
 ### Editor Config
 
-Arquivo `.editorconfig` garante formatação consistente entre editores.
+The `.editorconfig` file ensures consistent formatting across editors.
 
-## 📚 Conceitos Avançados Demonstrados
+## 📚 Advanced Concepts Demonstrated
 
 ### 1. Clean Architecture
-- Separação clara de responsabilidades
-- Dependências apontando para dentro (domain)
-- Camadas independentes e testáveis
+- Clear separation of concerns
+- Dependencies pointing inward (domain)
+- Independent and testable layers
 
 ### 2. Test-Driven Development (TDD)
 - Red → Green → Refactor
-- Testes escritos antes da implementação
-- Alta cobertura de testes
+- Tests written before implementation
+- High test coverage
 
 ### 3. SOLID Principles
-- **S**ingle Responsibility: Classes com responsabilidade única
-- **O**pen/Closed: Extensível via interfaces
-- **L**iskov Substitution: Contratos bem definidos
-- **I**nterface Segregation: Interfaces específicas
-- **D**ependency Inversion: Dependência de abstrações
+- **S**ingle Responsibility: Classes with single responsibility
+- **O**pen/Closed: Extensible via interfaces
+- **L**iskov Substitution: Well-defined contracts
+- **I**nterface Segregation: Specific interfaces
+- **D**ependency Inversion: Dependency on abstractions
 
 ### 4. Reactive Programming
-- Streams como fonte única de verdade
-- BehaviorSubject para estado reativo
-- Programação declarativa com StreamBuilder
+- Streams as single source of truth
+- BehaviorSubject for reactive state
+- Declarative programming with StreamBuilder
 
 ### 5. Error Handling
-- Sealed classes para erros type-safe
-- Tratamento específico por tipo de erro (401, unexpected)
-- UI resiliente com fallbacks
+- Sealed classes for type-safe errors
+- Specific handling by error type (401, unexpected)
+- Resilient UI with fallbacks
 
-## 🤝 Contribuindo
+## 🤝 Contributing
 
-Contribuições são bem-vindas! Este é um projeto educacional, então sinta-se à vontade para:
+Contributions are welcome! This is an educational project, so feel free to:
 
-1. Fazer fork do projeto
-2. Criar uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abrir um Pull Request
+1. Fork the project
+2. Create a branch for your feature (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📄 Licença
+## 📄 License
 
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+This project is under the MIT license. See the `LICENSE` file for more details.
 
-## 👨‍💻 Autor
+## 👨‍💻 Author
 
 **Maxwell Farias**
 
-## 🙏 Agradecimentos
+## 🙏 Acknowledgments
 
-Este projeto foi desenvolvido como material de estudo para demonstrar boas práticas de desenvolvimento Flutter avançado, incluindo:
+This project was developed as study material to demonstrate best practices in advanced Flutter development, including:
 - Clean Architecture
 - Test-Driven Development
 - Reactive Programming
@@ -288,4 +288,4 @@ Este projeto foi desenvolvido como material de estudo para demonstrar boas prát
 
 ---
 
-**⭐ Se este projeto foi útil para você, considere dar uma estrela!**
+**⭐ If this project was helpful to you, consider giving it a star!**
